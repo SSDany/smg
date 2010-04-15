@@ -11,7 +11,7 @@ begin
     def run_spec(name, files, rcov)
       Spec::Rake::SpecTask.new(name) do |t|
         t.spec_opts << '--colour' << '--loadby' << 'random'
-        t.spec_files = Pathname.glob(ENV['FILES'] || files.to_s).map(&:to_s)
+        t.spec_files = Pathname.glob(ENV['FILES'] || files.to_s).map{|f| f.to_s}
         t.rcov = rcov && !JRUBY
         t.rcov_opts << '--exclude' << 'spec' << '--exclude' << 'gems'
         t.rcov_opts << '--text-report'
