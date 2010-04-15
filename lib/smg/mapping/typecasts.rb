@@ -6,10 +6,16 @@ module SMG #:nodoc:
 
       class << self
         attr_accessor :typecasts
+
         def [](key,value)
           return typecasts[key][value] if typecasts.key?(key)
           raise ArgumentError, "Can't typecast to #{key.inspect}"
         end
+
+        def key?(key)
+          typecasts.key?(key)
+        end
+
       end
 
       self.typecasts = {}

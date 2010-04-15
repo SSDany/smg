@@ -28,12 +28,11 @@ describe SMG::Mapping::TypeCasts, "[]" do
     pending "write me, please! and code too ;)"
   end
 
-  it "is able to typecast (Stringable) into DateTime" do
-    pending "write me, please!"
-  end
-
   it "is able to typecast (Stringable) into Boolean" do
-    pending "write me, please!"
+    SMG::Mapping::TypeCasts[  :boolean  , "true"      ].should == true
+    SMG::Mapping::TypeCasts[  :boolean  , "something" ].should == true
+    SMG::Mapping::TypeCasts[  :boolean  , nil         ].should == true
+    SMG::Mapping::TypeCasts[  :boolean  , "false"     ].should == false
   end
 
 end

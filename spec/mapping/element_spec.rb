@@ -56,9 +56,68 @@ describe SMG::Mapping::Element do
 
     end
 
+    describe "with :class option" do
+
+      describe "and :class is a Class" do
+
+        it "raises an ArgumentError if :class is a Class, but not an SMG::Model" do
+          klass = Class.new
+          lambda { SMG::Mapping::Element.new(['node'], :class => klass)}.
+          should raise_error ArgumentError, %r{is not an SMG::Model}
+        end
+
+        it "defines @data_class otherwise" do
+          klass = Class.new { include SMG::Resource }
+          e = SMG::Mapping::Element.new(['node'], :class => klass)
+          e.data_class.should == klass
+        end
+
+      end
+
+      describe "and :class is a Symbol" do
+
+        it "raises an ArgumentError if :class is a Symbol, but not a valid typecast" do
+          lambda { SMG::Mapping::Element.new(['node'], :class => :bogus)}.
+          should raise_error ArgumentError, %r{is not a valid typecast}
+        end
+
+        it "defines @cast_to otherwise" do
+          klass = Class.new { include SMG::Resource }
+          e = SMG::Mapping::Element.new(['node'], :class => :string)
+          e.cast_to.should == :string
+        end
+
+      end
+
+      describe "and :class is a not a Class or Symbol" do
+        it "raises an ArgumentError" do
+          lambda { SMG::Mapping::Element.new(['node'], :class => "bogus!")}.
+          should raise_error ArgumentError, %r{should be an SMG::Model or a Symbol}
+        end
+      end
+
+    end
+
     it "knows if it is a collection" do
       e = SMG::Mapping::Element.new(['node','subnode'], :collection => true)
       e.should be_collection
+    end
+
+  end
+
+  describe "#cast" do
+
+    it "returns the same value if there's no @cast_to" do
+      e = SMG::Mapping::Element.new(['node'])
+      thing = "42"
+      e.cast(thing).should be_eql thing
+    end
+
+    it "performs the typecast otherwise" do
+      e = SMG::Mapping::Element.new(['node'], :class => :integer)
+      thing = "42"
+      SMG::Mapping::TypeCasts.should_receive(:[]).with(:integer, thing).and_return("42 (typecasted)")
+      e.cast(thing).should == "42 (typecasted)"
     end
 
   end
