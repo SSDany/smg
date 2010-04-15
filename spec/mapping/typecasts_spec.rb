@@ -14,6 +14,16 @@ describe SMG::Mapping::TypeCasts, "[]" do
     SMG::Mapping::TypeCasts[:symbol, "something"].should == :something
   end
 
+  it "is able to typecast (Stringable) into Time" do
+    value = SMG::Mapping::TypeCasts[:datetime,'Thu Apr 15 18:16:23 +0400 2010']
+    value.should == Time.parse('Thu Apr 15 18:16:23 +0400 2010')
+  end
+
+  it "is able to typecast (Stringable) into Date" do
+    value = SMG::Mapping::TypeCasts[:date,'Thu Apr 15 18:16:23 +0400 2010']
+    value.should == Date.parse('Thu Apr 15 18:16:23 +0400 2010')
+  end
+
   it "is able to typecast (Stringable) into URI" do
     value = SMG::Mapping::TypeCasts[:uri,"http://example.org:4567/foo?bar=baz"]
     value.should be_an_instance_of URI::HTTP
@@ -22,10 +32,6 @@ describe SMG::Mapping::TypeCasts, "[]" do
     value.port.should == 4567
     value.path.should == '/foo'
     value.query.should == 'bar=baz'
-  end
-
-  it "is able to typecast (Stringable) into DateTime" do
-    pending "write me, please! and code too ;)"
   end
 
   it "is able to typecast (Stringable) into Boolean" do
