@@ -6,10 +6,10 @@ module SMG #:nodoc:
 
       def initialize(path, options = {})
 
-        @name       = (options[:as] || options[:at] || path.last).to_s
+        @name       = (options[:as] || options[:at] || path.last).to_sym
         @path       = path
         @collection = !!options[:collection]
-        @accessor   = @collection ? "attach_#{@name}" : "#{@name}="
+        @accessor   = @collection ? :"attach_#{@name}" : :"#{@name}="
         @data_class = nil
         @cast_to    = nil
 

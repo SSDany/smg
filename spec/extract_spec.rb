@@ -9,10 +9,12 @@ describe SMG::Model, ".extract" do
 
   describe "extract" do
 
+    include Spec::Matchers::HaveInstanceMethodMixin
+
     it "defines appropriate reader and writer" do
       @klass.extract :whatever
-      @klass.instance_methods.should include "whatever"
-      @klass.instance_methods.should include "whatever="
+      @klass.should have_instance_method :whatever
+      @klass.should have_instance_method :whatever=
     end
 
     it "never overrides readers" do

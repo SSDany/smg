@@ -1,6 +1,10 @@
+# encoding: utf-8
+
 require File.expand_path File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe SMG::Model, ".collect" do
+
+  include Spec::Matchers::HaveInstanceMethodMixin
 
   before :each do
     @klass = Class.new { include SMG::Resource }
@@ -10,8 +14,8 @@ describe SMG::Model, ".collect" do
   it "defines appropriate reader and writer" do
     @klass.root 'resp/label'
     @klass.collect 'releases/release/catno', :as => :catalogue_numbers
-    @klass.instance_methods.should include 'catalogue_numbers'
-    @klass.instance_methods.should include 'attach_catalogue_numbers'
+    @klass.should have_instance_method 'catalogue_numbers'
+    @klass.should have_instance_method 'attach_catalogue_numbers'
   end
 
   it "never overrides readers" do
@@ -61,7 +65,7 @@ describe SMG::Model, ".collect", "without :class option" do
     @klass.collect 'releases/release/catno', :as => :catalogue_numbers
     label = @klass.parse(@data)
     label.catalogue_numbers.should be_an_instance_of ::Array
-    label.catalogue_numbers.should == ["GEN 001", "GEN 001", "GEN 002", "GEN 003", "GEN 006", "GEN 008", "GEN 008", "GEN 009", "GEN 012", "GEN 013", "GEN 015", "GEN004", "GEN005", "GEN006\302\275", "GEN007", "GEN009", "GEN010", "GEN011", "GEN012", "GEN014", "GEN016", "GEN017", "GENCD01", "GENOSHA 018"]
+    label.catalogue_numbers.should == ["GEN 001", "GEN 001", "GEN 002", "GEN 003", "GEN 006", "GEN 008", "GEN 008", "GEN 009", "GEN 012", "GEN 013", "GEN 015", "GEN004", "GEN005", "GEN006½", "GEN007", "GEN009", "GEN010", "GEN011", "GEN012", "GEN014", "GEN016", "GEN017", "GENCD01", "GENOSHA 018"]
   end
 
   it "collects attributes" do
