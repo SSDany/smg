@@ -26,18 +26,17 @@ module SMG #:nodoc:
       if !attrs.empty? & mappings = @mapping.attributes(@stack, attrs)
         mappings.each do |m|
           ix = attrs.index(m.at)
-          @object.send(m.accessor, attrs.at(ix+=1)) if ix
+          @object.send(m.accessor, m.cast(attrs.at(ix+=1))) if ix
         end
       end
 
-      # TODO: "already parsed" markers for mapping
       @element = @mapping.elements[@stack]
       @chars = ""
 
     end
 
     def end_element(name)
-      @object.send(@element.accessor, @chars) if @element && @chars
+      @object.send(@element.accessor, @element.cast(@chars)) if @element && @chars
       @chars, @element = nil, nil
       if doc = @docs.last
         doc.end_element(name)

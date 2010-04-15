@@ -3,7 +3,7 @@ module SMG #:nodoc:
 
     def extract(tag, options = {})
 
-      thing = if options[:class]
+      thing = if Class === options[:class]
         options.delete(:collection)
         mapping.attach_nested(tag,options)
       else
@@ -18,7 +18,7 @@ module SMG #:nodoc:
     def collect(tag, options = {})
 
       options.merge!(:collection => true)
-      thing = options[:class] ? mapping.attach_nested(tag,options) : mapping.attach_element(tag,options)
+      thing = Class === options[:class] ? mapping.attach_nested(tag,options) : mapping.attach_element(tag,options)
 
       unless instance_methods.include?(thing.accessor)
         class_eval <<-CODE

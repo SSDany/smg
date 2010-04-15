@@ -11,7 +11,7 @@ module SMG #:nodoc:
         @collection = !!options[:collection]
         @accessor   = @collection ? "attach_#{@name}" : "#{@name}="
         @data_class = nil
-        @cast       = nil
+        @cast_to    = nil
 
         if c = options[:class]
           if Class === c
