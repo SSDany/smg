@@ -7,6 +7,7 @@ require ROOT + 'lib/smg/version'
 
 require ROOT + 'tasks/spec'
 require ROOT + 'tasks/benchmarks'
+require ROOT + 'tasks/package'
 
 task :default => :spec
 
