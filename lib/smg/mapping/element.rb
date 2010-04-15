@@ -31,8 +31,7 @@ module SMG #:nodoc:
       end
 
       def cast(value)
-        return value unless @cast_to
-        ::SMG::Mapping::TypeCasts[@cast_to, value]
+        @cast_to ? ::SMG::Mapping::TypeCasts[@cast_to, value] : value
       rescue
         #TODO: report about malformed data
       end

@@ -1,18 +1,13 @@
 module SMG #:nodoc:
   class Mapping
 
-    attr_reader :elements, :nested
+    attr_reader :elements, :nested, :attributes
     attr_reader :root
 
     def initialize
       @elements   = {}
       @nested     = {}
       @attributes = {}
-    end
-
-    def attributes(chain, attrs)
-      return nil unless map = @attributes[chain]
-      map.values_at(*Hash[*attrs].keys).compact
     end
 
     def attach_element(tag,options)

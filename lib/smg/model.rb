@@ -10,11 +10,8 @@ module SMG #:nodoc:
         mapping.attach_element(tag,options)
       end
 
-      attr_reader thing.name unless instance_methods.include?(thing.name) ||
-                                    instance_methods.include?(thing.name.to_s)
-
-      attr_writer thing.name unless instance_methods.include?(thing.accessor) ||
-                                    instance_methods.include?(thing.accessor.to_s)
+      attr_reader thing.name if (instance_methods & [thing.name, thing.name.to_s]).empty?
+      attr_writer thing.name if (instance_methods & [thing.accessor, thing.accessor.to_s]).empty?
 
     end
 
@@ -23,8 +20,7 @@ module SMG #:nodoc:
       options.merge!(:collection => true)
       thing = Class === options[:class] ? mapping.attach_nested(tag,options) : mapping.attach_element(tag,options)
 
-      unless instance_methods.include?(thing.accessor) ||
-             instance_methods.include?(thing.accessor.to_s)
+      if (instance_methods & [thing.accessor, thing.accessor.to_s]).empty?
         class_eval <<-CODE
         def #{thing.accessor}(value)
           @#{thing.name} ||= []
@@ -33,8 +29,7 @@ module SMG #:nodoc:
         CODE
       end
 
-      unless instance_methods.include?(thing.name) ||
-             instance_methods.include?(thing.name.to_s)
+      if (instance_methods & [thing.name, thing.name.to_s]).empty?
         class_eval <<-CODE
         def #{thing.name}
           @#{thing.name} ||= []

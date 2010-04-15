@@ -14,7 +14,7 @@ module SMG #:nodoc:
 
     def start_element(name, attrs = [])
 
-      @stack.push name
+      @stack << name
 
       if doc = @docs.last
         doc.start_element(name, attrs)
@@ -23,10 +23,10 @@ module SMG #:nodoc:
         doc.start_element(name, attrs)
       end
 
-      if !attrs.empty? & mappings = @mapping.attributes(@stack, attrs)
-        mappings.each do |m|
+      if !attrs.empty? && maps = @mapping.attributes[@stack]
+        maps.values_at(*Hash[*attrs].keys).compact.each do |m|
           ix = attrs.index(m.at)
-          @object.send(m.accessor, m.cast(attrs.at(ix+=1))) if ix
+          @object.__send__(m.accessor, m.cast(attrs.at(ix+=1))) if ix
         end
       end
 
@@ -41,7 +41,7 @@ module SMG #:nodoc:
       if doc = @docs.last
         doc.end_element(name)
         if doc.thing.path == @stack
-          @object.send(doc.thing.accessor, doc.object)
+          @object.__send__(doc.thing.accessor, doc.object)
           @docs.pop
         end
       end
