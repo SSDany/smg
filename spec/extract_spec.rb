@@ -4,7 +4,7 @@ describe SMG::Model, ".extract" do
 
   before :each do
     @klass = Class.new { include SMG::Resource }
-    @data = File.read(FIXTURES_DIR + 'xml/fake/malus.xml')
+    @data = File.read(FIXTURES_DIR + 'fake/malus.xml')
   end
 
   describe "extract" do

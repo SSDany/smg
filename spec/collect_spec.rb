@@ -8,7 +8,7 @@ describe SMG::Model, ".collect" do
 
   before :each do
     @klass = Class.new { include SMG::Resource }
-    @data = data = File.read(FIXTURES_DIR + 'xml/discogs/Genosha+Recordings.xml')
+    @data = data = File.read(FIXTURES_DIR + 'discogs/Genosha+Recordings.xml')
   end
 
   it "defines appropriate reader and writer" do
@@ -57,7 +57,7 @@ describe SMG::Model, ".collect", "without :class option" do
 
   before :each do
     @klass = Class.new { include SMG::Resource }
-    @data = data = File.read(FIXTURES_DIR + 'xml/discogs/Genosha+Recordings.xml')
+    @data = data = File.read(FIXTURES_DIR + 'discogs/Genosha+Recordings.xml')
   end
 
   it "collects texts" do
@@ -97,14 +97,13 @@ describe SMG::Model, ".collect", "when :class option represents SMG::Resource" d
 
   before :each do
     @klass = Class.new { include SMG::Resource }
-    @data = data = File.read(FIXTURES_DIR + 'xml/discogs/Genosha+Recordings.xml')
+    @data = data = File.read(FIXTURES_DIR + 'discogs/Genosha+Recordings.xml')
   end
 
   before :all do
     @release_class = Class.new { include SMG::Resource }
     @release_class.extract 'release'       , :at => :id      , :as => :discogs_id
-    @release_class.extract 'release'       , :at => :status  , :as => :status
-    @release_class.extract 'release/title'
+    @release_class.extract 'release'       , :at => :status
     @release_class.extract 'release/title'
 
     @image_class = Class.new { include SMG::Resource }
@@ -122,6 +121,7 @@ describe SMG::Model, ".collect", "when :class option represents SMG::Resource" d
     label.releases.size.should == 24
     label.releases[8].title.should == "No, We Don't Want You To Clap Your Fucking Hands"
     label.releases[8].discogs_id.should == "1079145"
+    label.releases[8].status.should == "Accepted"
   end
 
   it "is able to build multiple collections" do
@@ -162,7 +162,7 @@ describe SMG::Model, ".collect", "with nested collections" do
 
   before :each do
     @klass = Class.new { include SMG::Resource }
-    @data = data = File.read(FIXTURES_DIR + 'xml/discogs/948224.xml')
+    @data = data = File.read(FIXTURES_DIR + 'discogs/948224.xml')
   end
 
   before :all do

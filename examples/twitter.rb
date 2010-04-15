@@ -31,7 +31,7 @@ class User
 
 end
 
-data = File.read(ROOT.join('spec/fixtures/xml/pipopolam.xml'))
+data = File.read(ROOT.join('spec/fixtures/twitter/pipopolam.xml'))
 user = User.parse(data)
 
 puts "#{user.screen_name} (#{user.name}), since #{user.created_at.strftime('%Y.%m.%d')}"
