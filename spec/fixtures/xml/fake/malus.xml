@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<spec>
+  <kingdom>Plantae</kingdom>
+  <division>Magnoliophyta</division>
+  <class>Magnoliopsida</class>
+  <order>Rosales</order>
+  <family>Rosaceae</family>
+  <genus>Malus</genus>
+  <conservation code="VU" year="2007">Vulnerable (IUCN 2.3)</conservation>
+  <binomial>Malus sieversii (Ledeb.) M.Roem.</binomial>
+  <description>
+    <common>Asian Wild Apple</common>
+    <described_at>1983</described_at>
+    <described_by>Carl Friedrich von Ledebour</described_by>
+    <described_as>Pyrus sieversii</described_as>
+  </description>
+  <additional></additional>
+</spec>
