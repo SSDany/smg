@@ -3,15 +3,21 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 class Label
 
   class Release
+
     include SMG::Resource
-    extract 'release'           , :at => :id, :as => :discogs_id, :class => :integer
-    extract 'release'           , :at => :status
-    extract 'release/title'
-    extract 'release/catno'
-    extract 'release/artist'
+
+    extract :release  , :at => :id, :as => :discogs_id, :class => :integer
+    extract :release  , :at => :status
+
+    root 'release'
+    extract :title
+    extract :catno
+    extract :artist
+
   end
 
   include SMG::Resource
+
   root 'resp/label'
   extract :name
   extract :profile

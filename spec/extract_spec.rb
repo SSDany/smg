@@ -110,7 +110,7 @@ describe SMG::Model, ".extract" do
         it "extracts data into the class (AKA has_one)" do
           @foo = Class.new
           @foo.send(:include, SMG::Resource)
-          @foo.root :description
+          @foo.root 'description'
           @foo.extract :common
           @foo.extract :described_by
           @foo.extract :described_as

@@ -27,8 +27,7 @@ module SMG #:nodoc:
     end
 
     def use_root(path)
-      raise "root already defined!" if @root
-      @root = normalize_path(path)
+      @root = normalize_path(path) # just a root tag for further definitions
     end
 
     private
