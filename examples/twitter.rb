@@ -1,10 +1,4 @@
-require 'pathname'
-
-ROOT = Pathname(__FILE__).dirname.expand_path.parent
-
-dir = ROOT.join('lib').to_s
-$:.unshift(dir) unless $:.include?(dir)
-require 'smg'
+require File.expand_path(File.join(File.dirname(__FILE__), 'helper'))
 
 class Status
   include SMG::Resource
