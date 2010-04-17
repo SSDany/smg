@@ -126,10 +126,22 @@ describe SMG::Model, ".extract" do
 
       end
 
-      describe "when :class options represents build-in typecast" do
+      describe "when :class options represents built-in typecast" do
 
-        it "typecasts" do
-          pending "write me, please"
+        it "makes an attempt to perform a typecast" do
+          Class.new { include SMG::Resource }
+          @klass.root 'spec'
+          @klass.extract :conservation, :at => :year, :class => :integer, :as => :year_of_conservation_check
+          malus = @klass.parse(@data)
+          malus.year_of_conservation_check.should == 2007
+        end
+
+        it "raises an ArgumentError if typecasting fails" do
+          Class.new { include SMG::Resource }
+          @klass.root 'spec'
+          @klass.extract :conservation, :at => :year, :class => :datetime, :as => :year_of_conservation_check
+          lambda { @klass.parse(@data) }.
+          should raise_error ArgumentError, %r{"2007" is not a valid source for :datetime} 
         end
 
       end

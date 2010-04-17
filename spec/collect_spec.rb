@@ -158,6 +158,31 @@ describe SMG::Model, ".collect", "when :class option represents SMG::Resource" d
 
 end
 
+describe SMG::Model, ".collect", "when :class options represents built-in typecast" do
+
+  before :each do
+    @klass = Class.new { include SMG::Resource }
+    @data = data = File.read(FIXTURES_DIR + 'discogs/Genosha+Recordings.xml')
+  end
+
+  it "makes an attempt to perform a typecast" do
+    Class.new { include SMG::Resource }
+    @klass.root 'resp/label'
+    @klass.collect 'releases/release', :at => :id, :class => :integer, :as => :release_ids
+    label = @klass.parse(@data)
+    label.release_ids.should == [183713, 1099277, 183735, 225253, 354681, 1079143, 448035, 1083336, 1079145, 814757, 964449, 254166, 341855, 387611, 396345, 448709, 529057, 662611, 683859, 915651, 1021944, 1494949, 354683, 1825580] 
+  end
+
+  it "raises an ArgumentError if typecasting fails" do
+    Class.new { include SMG::Resource }
+    @klass.root 'resp/label'
+    @klass.collect 'releases/release', :at => :id, :class => :datetime, :as => :release_ids
+    lambda { @klass.parse(@data) }.
+    should raise_error ArgumentError, %r{"183713" is not a valid source for :datetime} 
+  end
+
+end
+
 describe SMG::Model, ".collect", "with nested collections" do
 
   before :each do

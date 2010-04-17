@@ -98,11 +98,11 @@ describe SMG::Mapping::Element do
 
     end
 
-    it "knows if it is a collection" do
-      e = SMG::Mapping::Element.new(['node','subnode'], :collection => true)
-      e.should be_collection
-    end
+  end
 
+  it "knows if it is a collection" do
+    e = SMG::Mapping::Element.new(['node','subnode'], :collection => true)
+    e.should be_collection
   end
 
   describe "#cast" do
@@ -118,6 +118,12 @@ describe SMG::Mapping::Element do
       thing = "42"
       SMG::Mapping::TypeCasts.should_receive(:[]).with(:integer, thing).and_return("42 (typecasted)")
       e.cast(thing).should == "42 (typecasted)"
+    end
+
+    it "raises an ArgumentError if typecasting fails" do
+      e = SMG::Mapping::Element.new(['node'], :class => :datetime)
+      lambda { e.cast('42') }.
+      should raise_error ArgumentError, %r{"42" is not a valid source for :datetime}
     end
 
   end

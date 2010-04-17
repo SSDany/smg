@@ -33,7 +33,7 @@ module SMG #:nodoc:
       def cast(value)
         @cast_to ? ::SMG::Mapping::TypeCasts[@cast_to, value] : value
       rescue
-        #TODO: report about malformed data
+        raise ArgumentError, "#{value.inspect} is not a valid source for #{@cast_to.inspect}"
       end
 
       def collection?

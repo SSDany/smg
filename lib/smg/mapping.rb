@@ -13,9 +13,9 @@ module SMG #:nodoc:
     def attach_element(tag,options)
       chain = handle_path(tag)
       if options.key?(:at)
-        ele = Element.new(chain, options)
+        thing = Element.new(chain, options)
         @attributes[chain] ||= {}
-        @attributes[chain][ele.at] = ele
+        @attributes[chain][thing.at] = thing
       else
         @elements[chain] = Element.new(chain, options)
       end
