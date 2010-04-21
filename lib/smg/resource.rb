@@ -5,10 +5,8 @@ module SMG #:nodoc:
       base.extend Model
     end
 
-    def parse(data)
-      doc = SMG::Document.new(self)
-      ::Nokogiri::XML::SAX::Parser.new(doc).parse(data)
-      self
+    def parsed?
+      @_parsed
     end
 
   end

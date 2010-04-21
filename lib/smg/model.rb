@@ -43,8 +43,12 @@ module SMG #:nodoc:
       mapping.use_root(tag)
     end
 
-    def parse(xml)
-      self.new.parse(xml)
+    def parse(data, context = :default)
+      resource = new
+      doc = SMG::Document.new(resource,context)
+      ::Nokogiri::XML::SAX::Parser.new(doc).parse(data)
+      resource.instance_variable_set(:@_parsed, true)
+      resource
     end
 
     def mapping

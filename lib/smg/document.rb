@@ -3,12 +3,13 @@ module SMG #:nodoc:
 
     attr_reader :object, :thing
 
-    def initialize(object, thing = nil)
+    def initialize(object, context = :default, thing = nil)
       @object   = object
       @mapping  = object.class.mapping
       @stack    = []
       @docs     = []
       @thing    = thing
+      @context  = context
       @chars    = ""
     end
 
@@ -18,19 +19,19 @@ module SMG #:nodoc:
 
       if doc = @docs.last
         doc.start_element(name, attrs)
-      elsif thing = @mapping.nested[@stack]
-        @docs << doc = Document.new(thing.data_class.new,thing)
+      elsif @mapping.nested.key?(@context) && thing = @mapping.nested[@context][@stack]
+        @docs << doc = Document.new(thing.data_class.new,@context,thing)
         doc.start_element(name, attrs)
       end
 
-      if !attrs.empty? && maps = @mapping.attributes[@stack]
+      if !attrs.empty? && @mapping.attributes.key?(@context) && maps = @mapping.attributes[@context][@stack]
         maps.values_at(*Hash[*attrs].keys).compact.each do |m|
           ix = attrs.index(m.at)
           @object.__send__(m.accessor, m.cast(attrs.at(ix+=1))) if ix
         end
       end
 
-      @element = @mapping.elements[@stack]
+      @element = @mapping.elements.key?(@context) ? @mapping.elements[@context][@stack] : nil
       @chars = ""
 
     end
