@@ -37,21 +37,21 @@ describe SMG::Mapping::Element do
       end
 
       it "respects :collection option" do
-        e = SMG::Mapping::Element.new(['node','subnode'], :collection => true)
-        e.name.should == :subnode
-        e.accessor.should == :attach_subnode
+        e = SMG::Mapping::Element.new(['node','subnodes'], :collection => true)
+        e.name.should == :subnodes
+        e.accessor.should == :append_to_subnodes
 
-        e = SMG::Mapping::Element.new(['node','subnode'], :at => :something, :collection => true)
+        e = SMG::Mapping::Element.new(['node','subnodes'], :at => :something, :collection => true)
         e.name.should == :something
-        e.accessor.should == :attach_something
+        e.accessor.should == :append_to_something
 
-        e = SMG::Mapping::Element.new(['node','subnode'], :at => :whatever, :as => :something, :collection => true)
+        e = SMG::Mapping::Element.new(['node','subnodes'], :at => :whatever, :as => :something, :collection => true)
         e.name.should == :something
-        e.accessor.should == :attach_something
+        e.accessor.should == :append_to_something
 
-        e = SMG::Mapping::Element.new(['node','subnode'], :as => :something, :collection => true)
+        e = SMG::Mapping::Element.new(['node','subnodes'], :as => :something, :collection => true)
         e.name.should == :something
-        e.accessor.should == :attach_something
+        e.accessor.should == :append_to_something
       end
 
     end
