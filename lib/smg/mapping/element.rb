@@ -9,17 +9,17 @@ module SMG #:nodoc:
         @name       = (options[:as] || options[:at] || path.last).to_sym
         @path       = path
         @collection = !!options[:collection]
-        @accessor   = @collection ? :"attach_#{@name}" : :"#{@name}="
+        @accessor   = @collection ? :"append_to_#{@name}" : :"#{@name}="
         @data_class = nil
         @cast_to    = nil
 
-        if c = options[:class]
-          if Class === c
-            raise ArgumentError, "#{c} is not an SMG::Model" unless c.include?(::SMG::Resource)
-            @data_class = c
-          elsif Symbol === c
-            raise ArgumentError, "#{c} is not a valid typecast" unless TypeCasts.key?(c)
-            @cast_to = c
+        if klass = options[:class]
+          if Class === klass
+            raise ArgumentError, "#{klass} is not an SMG::Model" unless klass.include?(::SMG::Resource)
+            @data_class = klass
+          elsif Symbol === klass
+            raise ArgumentError, "#{klass} is not a valid typecast" unless TypeCasts.key?(klass)
+            @cast_to = klass
           else
             raise ArgumentError, ":class should be an SMG::Model or a Symbol"
           end

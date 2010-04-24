@@ -15,7 +15,7 @@ describe SMG::Model, ".collect" do
     @klass.root 'resp/label'
     @klass.collect 'releases/release/catno', :as => :catalogue_numbers
     @klass.should have_instance_method 'catalogue_numbers'
-    @klass.should have_instance_method 'attach_catalogue_numbers'
+    @klass.should have_instance_method 'append_to_catalogue_numbers'
   end
 
   it "never overrides readers" do
@@ -36,7 +36,7 @@ describe SMG::Model, ".collect" do
     @klass.root 'resp/label'
     @klass.collect 'urls/url', :as => :urls
     @klass.class_eval <<-CODE
-    def attach_urls(value)
+    def append_to_urls(value)
       unless value.nil? || value.empty?
         @urls ||= []
         @urls << URI.parse(value)
