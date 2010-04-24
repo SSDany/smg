@@ -25,9 +25,9 @@ module SMG #:nodoc:
       end
 
       if !attrs.empty? && @mapping.attributes.key?(@context) && maps = @mapping.attributes[@context][@stack]
-        maps.values_at(*Hash[*attrs].keys).compact.each do |m|
-          ix = attrs.index(m.at)
-          @object.__send__(m.accessor, m.cast(attrs.at(ix+=1))) if ix
+        attrh = Hash[*attrs]
+        maps.values_at(*attrh.keys).compact.each do |m|
+          @object.__send__(m.accessor, m.cast(attrh[m.at]))
         end
       end
 
