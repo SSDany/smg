@@ -66,10 +66,11 @@ begin
       two { SMGUser.parse(data) }
     end
 
-    User.has_one :status, Status
-    SMGUser.extract :status, :class => SMGStatus
-
     report "and one nested resource, please" do
+
+      User.has_one :status, Status
+      SMGUser.extract :status, :class => SMGStatus
+
       one { User.parse(data)    }
       two { SMGUser.parse(data) }
     end

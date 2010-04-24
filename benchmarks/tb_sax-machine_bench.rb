@@ -66,10 +66,11 @@ begin
       two { SMGUser.parse(data) }
     end
 
-    SMAUser.element :status, :class => SMAStatus
-    SMGUser.extract :status, :class => SMGStatus
-
     report "and one nested resource, please" do
+
+      SMAUser.element :status, :class => SMAStatus
+      SMGUser.extract :status, :class => SMGStatus
+
       one { SMAUser.parse(data) }
       two { SMGUser.parse(data) }
     end
