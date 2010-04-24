@@ -12,6 +12,7 @@ module SMG #:nodoc:
         @accessor   = @collection ? :"append_to_#{@name}" : :"#{@name}="
         @data_class = nil
         @cast_to    = nil
+        @context    = options[:context] || [] #TODO: validations
 
         if klass = options[:class]
           if Class === klass
@@ -38,6 +39,10 @@ module SMG #:nodoc:
 
       def collection?
         @collection
+      end
+
+      def in_context_of?(context)
+        @context.empty? || @context.include?(context)
       end
 
     end

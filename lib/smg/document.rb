@@ -3,7 +3,7 @@ module SMG #:nodoc:
 
     attr_reader :object, :thing
 
-    def initialize(object, context = :default, thing = nil)
+    def initialize(object, context = nil, thing = nil)
       @object   = object
       @mapping  = object.class.mapping
       @stack    = []
@@ -19,19 +19,20 @@ module SMG #:nodoc:
 
       if doc = @docs.last
         doc.start_element(name, attrs)
-      elsif @mapping.nested.key?(@context) && thing = @mapping.nested[@context][@stack]
+      elsif thing = @mapping.nested[@stack] and thing.in_context_of?(@context)
         @docs << doc = Document.new(thing.data_class.new,@context,thing)
         doc.start_element(name, attrs)
       end
 
-      if !attrs.empty? && @mapping.attributes.key?(@context) && maps = @mapping.attributes[@context][@stack]
+      if !attrs.empty? && maps = @mapping.attributes[@stack]
         attrh = Hash[*attrs]
         maps.values_at(*attrh.keys).compact.each do |m|
-          @object.__send__(m.accessor, m.cast(attrh[m.at]))
+          @object.__send__(m.accessor, m.cast(attrh[m.at])) if m.in_context_of?(@context)
         end
       end
 
-      @element = @mapping.elements.key?(@context) ? @mapping.elements[@context][@stack] : nil
+      @element = @mapping.elements[@stack]
+      @element = nil unless @element && @element.in_context_of?(@context)
       @chars = ""
 
     end

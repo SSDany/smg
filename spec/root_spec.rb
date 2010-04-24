@@ -9,7 +9,7 @@ describe SMG::Model, ".root" do
   it "defines the root tag for further mapping" do
     @klass.root 'foo'
     @klass.extract 'a'
-    @klass.mapping.elements[:default].should have_key ['foo','a']
+    @klass.mapping.elements.should have_key ['foo','a']
   end
 
   it "could be redefined on-the-fly" do
@@ -17,8 +17,8 @@ describe SMG::Model, ".root" do
     @klass.extract 'a'
     @klass.root 'bar'
     @klass.extract 'b'
-    @klass.mapping.elements[:default].should have_key ['foo','a']
-    @klass.mapping.elements[:default].should have_key ['bar','b']
+    @klass.mapping.elements.should have_key ['foo','a']
+    @klass.mapping.elements.should have_key ['bar','b']
   end
 
 end
