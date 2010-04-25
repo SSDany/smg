@@ -12,12 +12,11 @@ module SMG #:nodoc:
 
     def attach_element(tag,options)
       chain = handle_path(tag)
+      thing = Element.new(chain, options)
       if options.key?(:at)
-        thing = Element.new(chain, options)
         @attributes[chain] ||= {}
         @attributes[chain][thing.at] = thing
       else
-        thing = Element.new(chain, options)
         @elements[chain] = thing
       end
       thing
@@ -31,16 +30,13 @@ module SMG #:nodoc:
     end
 
     def use_root(path)
-      @root = normalize_path(path) # just a root tag for further definitions
+      @root = normalize_path(path)
     end
 
     private
 
     def normalize_path(path)
       path.to_s.split("/")
-    end
-
-    def handle_options(options)
     end
 
     def handle_path(path)

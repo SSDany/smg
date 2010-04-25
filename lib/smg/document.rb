@@ -19,7 +19,7 @@ module SMG #:nodoc:
 
       if doc = @docs.last
         doc.start_element(name, attrs)
-      elsif thing = @mapping.nested[@stack] and thing.in_context_of?(@context)
+      elsif (thing = @mapping.nested[@stack]) && thing.in_context_of?(@context)
         @docs << doc = Document.new(thing.data_class.new,@context,thing)
         doc.start_element(name, attrs)
       end
@@ -31,15 +31,21 @@ module SMG #:nodoc:
         end
       end
 
-      @element = @mapping.elements[@stack]
-      @element = nil unless @element && @element.in_context_of?(@context)
-      @chars = ""
+      if (e = @mapping.elements[@stack]) && e.in_context_of?(@context)
+        @element = e
+        @chars = ""
+      end
 
     end
 
     def end_element(name)
-      @object.send(@element.accessor, @element.cast(@chars)) if @element && @chars
-      @chars, @element = nil, nil
+
+      if @element
+        @object.__send__(@element.accessor, @element.cast(@chars))
+        @chars = ""
+        @element = nil
+      end
+
       if doc = @docs.last
         doc.end_element(name)
         if doc.thing.path == @stack
@@ -47,13 +53,14 @@ module SMG #:nodoc:
           @docs.pop
         end
       end
+
       @stack.pop
+
     end
 
     def characters(string)
       if doc = @docs.last
         doc.characters(string)
-        @chars ||= ""
         @chars << string
       elsif @element
         @chars << string
