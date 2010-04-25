@@ -35,7 +35,7 @@ describe SMG::Model, ".extract" do
       malus.instance_variable_get(:@kingdom).should == "PLANTAE"
     end
 
-    it "extracts an empty string if there's an empty element" do
+    it "extracts an empty String if there's an empty element" do
       @klass.root 'spec'
       @klass.extract :additional
       malus = @klass.parse(@data)
@@ -89,13 +89,13 @@ describe SMG::Model, ".extract" do
         malus.should respond_to :conservation_status=
       end
 
-      it "extracts data from an element into the 'as' accessor" do
+      it "extracts data from an element using the 'as' accessor" do
         @klass.extract 'spec/conservation', :as => :conservation_status
         malus = @klass.parse(@data)
         malus.conservation_status.should == 'Vulnerable (IUCN 2.3)'
       end
 
-      it "extracts nothing if there'no appropriate element" do
+      it "extracts nothing if there's no appropriate element" do
         @klass.extract 'spec/bogus', :as => :conservation_code, :at => :bogus
         malus = @klass.parse(@data)
         malus.conservation_code.should == nil

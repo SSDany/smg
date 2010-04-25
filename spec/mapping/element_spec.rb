@@ -2,107 +2,128 @@ require File.expand_path File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 describe SMG::Mapping::Element do
 
-  describe "instantiation" do
+  describe "#initialize" do
 
-    describe "name and accessor" do
+    it "respects path" do
+      e = SMG::Mapping::Element.new(['node','subnode'])
+      e.name.should == :subnode
+      e.accessor.should == :subnode=
 
-      it "respects path" do
-        e = SMG::Mapping::Element.new(['node','subnode'])
-        e.name.should == :subnode
-        e.accessor.should == :subnode=
+      e = SMG::Mapping::Element.new(['node','subnode'], :nested => true)
+      e.name.should == :subnode
+      e.accessor.should == :subnode=
+    end
 
-        e = SMG::Mapping::Element.new(['node','subnode'], :nested => true)
-        e.name.should == :subnode
-        e.accessor.should == :subnode=
-      end
+    it "respects :at option" do
+      e = SMG::Mapping::Element.new(['node','subnode'], :at => :something)
+      e.name.should == :something
+      e.accessor.should == :something=
 
-      it "respects :at option" do
-        e = SMG::Mapping::Element.new(['node','subnode'], :at => :something)
-        e.name.should == :something
-        e.accessor.should == :something=
+      e = SMG::Mapping::Element.new(['node','subnode'], :at => :something, :nested => true)
+      e.name.should == :something
+      e.accessor.should == :something=
+    end
 
-        e = SMG::Mapping::Element.new(['node','subnode'], :at => :something, :nested => true)
-        e.name.should == :something
-        e.accessor.should == :something=
-      end
+    it "respects :as option" do
+      e = SMG::Mapping::Element.new(['node','subnode'], :at => :whatever, :as => :something)
+      e.name.should == :something
+      e.accessor.should == :something=
 
-      it "respects :as option" do
-        e = SMG::Mapping::Element.new(['node','subnode'], :at => :whatever, :as => :something)
-        e.name.should == :something
-        e.accessor.should == :something=
+      e = SMG::Mapping::Element.new(['node','subnode'], :as => :whatever, :nested => true)
+      e.name.should == :whatever
+      e.accessor.should == :whatever=
+    end
 
-        e = SMG::Mapping::Element.new(['node','subnode'], :as => :whatever, :nested => true)
-        e.name.should == :whatever
-        e.accessor.should == :whatever=
-      end
+    it "respects :collection option" do
+      e = SMG::Mapping::Element.new(['node','subnodes'], :collection => true)
+      e.name.should == :subnodes
+      e.accessor.should == :append_to_subnodes
 
-      it "respects :collection option" do
-        e = SMG::Mapping::Element.new(['node','subnodes'], :collection => true)
-        e.name.should == :subnodes
-        e.accessor.should == :append_to_subnodes
+      e = SMG::Mapping::Element.new(['node','subnodes'], :at => :something, :collection => true)
+      e.name.should == :something
+      e.accessor.should == :append_to_something
 
-        e = SMG::Mapping::Element.new(['node','subnodes'], :at => :something, :collection => true)
-        e.name.should == :something
-        e.accessor.should == :append_to_something
+      e = SMG::Mapping::Element.new(['node','subnodes'], :at => :whatever, :as => :something, :collection => true)
+      e.name.should == :something
+      e.accessor.should == :append_to_something
 
-        e = SMG::Mapping::Element.new(['node','subnodes'], :at => :whatever, :as => :something, :collection => true)
-        e.name.should == :something
-        e.accessor.should == :append_to_something
+      e = SMG::Mapping::Element.new(['node','subnodes'], :as => :something, :collection => true)
+      e.name.should == :something
+      e.accessor.should == :append_to_something
+    end
 
-        e = SMG::Mapping::Element.new(['node','subnodes'], :as => :something, :collection => true)
-        e.name.should == :something
-        e.accessor.should == :append_to_something
-      end
-
+    it "defaults @context to nil" do
+      e = SMG::Mapping::Element.new(['node','subnode'])
+      e.context.should be_nil
     end
 
     describe "with :class option" do
 
-      describe "and :class is a Class" do
+      it "defines the @data_class if :class is an SMG::Model" do
+        klass = Class.new { include SMG::Resource }
+        e = SMG::Mapping::Element.new(['node'], :class => klass)
+        e.data_class.should == klass
+      end
 
-        it "raises an ArgumentError if :class is a Class, but not an SMG::Model" do
-          klass = Class.new
-          lambda { SMG::Mapping::Element.new(['node'], :class => klass)}.
-          should raise_error ArgumentError, %r{is not an SMG::Model}
-        end
+      it "defines the @cast_to if :class is a valid typecast" do
+        klass = Class.new { include SMG::Resource }
+        e = SMG::Mapping::Element.new(['node'], :class => :string)
+        e.cast_to.should == :string
+      end
 
-        it "defines @data_class otherwise" do
-          klass = Class.new { include SMG::Resource }
-          e = SMG::Mapping::Element.new(['node'], :class => klass)
-          e.data_class.should == klass
-        end
+      it "raises an ArgumentError otherwise" do
+        lambda { SMG::Mapping::Element.new(['node'], :class => "bogus!")}.
+        should raise_error ArgumentError, %r{should be an SMG::Model or a valid typecast}
+      end
+
+    end
+
+    describe "with :context option" do
+
+      it "defaults @context to nil, if :context is an empty Array" do
+        e = SMG::Mapping::Element.new(['node'], :context => [])
+        e.context.should be_nil
+      end
+
+      it "removes nils and duplicates from @context" do
+
+        e = SMG::Mapping::Element.new(['node'], :context => [:foo, nil, :bar, :baz])
+        e.context.should == [:foo, :bar, :baz]
+
+        e = SMG::Mapping::Element.new(['node'], :context => [:foo, :bar, nil, :foo, :baz])
+        e.context.should == [:foo, :bar, :baz]
+
+        e = SMG::Mapping::Element.new(['node'], :context => [nil])
+        e.context.should be_nil
+
+        # undestructive
+        cct = [:foo, :foo, :bar]
+        e = SMG::Mapping::Element.new(['node','subnode'], :context => cct)
+        cct.should == [:foo, :foo, :bar]
 
       end
 
-      describe "and :class is a Symbol" do
-
-        it "raises an ArgumentError if :class is a Symbol, but not a valid typecast" do
-          lambda { SMG::Mapping::Element.new(['node'], :class => :bogus)}.
-          should raise_error ArgumentError, %r{is not a valid typecast}
-        end
-
-        it "defines @cast_to otherwise" do
-          klass = Class.new { include SMG::Resource }
-          e = SMG::Mapping::Element.new(['node'], :class => :string)
-          e.cast_to.should == :string
-        end
-
-      end
-
-      describe "and :class is a not a Class or Symbol" do
-        it "raises an ArgumentError" do
-          lambda { SMG::Mapping::Element.new(['node'], :class => "bogus!")}.
-          should raise_error ArgumentError, %r{should be an SMG::Model or a Symbol}
-        end
+      it "raises an ArgumentError, if :context is not an Array" do
+        lambda { e = SMG::Mapping::Element.new(['node'], :context => "something") }.
+        should raise_error ArgumentError, %r{should be an Array}
       end
 
     end
 
   end
 
-  it "knows if it is a collection" do
-    e = SMG::Mapping::Element.new(['node','subnode'], :collection => true)
-    e.should be_collection
+  describe "#collection?" do
+
+    it "returns true if Element is a collection" do
+      e = SMG::Mapping::Element.new(['node','subnode'], :collection => true)
+      e.should be_a_collection
+    end
+
+    it "returns false otherwise" do
+      e = SMG::Mapping::Element.new(['node','subnode'])
+      e.should_not be_a_collection
+    end
+
   end
 
   describe "#cast" do
@@ -124,6 +145,28 @@ describe SMG::Mapping::Element do
       e = SMG::Mapping::Element.new(['node'], :class => :datetime)
       lambda { e.cast('42') }.
       should raise_error ArgumentError, %r{"42" is not a valid source for :datetime}
+    end
+
+  end
+
+  describe "#in_context_of?" do
+
+    it "returns true if @context of an Element is a nil" do
+      e = SMG::Mapping::Element.new(['node','subnode'])
+      e.context.should == nil
+      e.in_context_of?(:whatever).should == true
+    end
+
+    it "returns true if @context of an Element includes context" do
+      e = SMG::Mapping::Element.new(['node','subnode'], :context => [:foo])
+      e.context.should == [:foo]
+      e.in_context_of?(:foo).should == true
+    end
+
+    it "returns false otherwise" do
+      e = SMG::Mapping::Element.new(['node','subnode'], :context => [:foo])
+      e.context.should == [:foo]
+      e.in_context_of?(:bar).should == false
     end
 
   end

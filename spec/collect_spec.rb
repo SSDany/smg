@@ -158,7 +158,7 @@ describe SMG::Model, ".collect", "when :class option represents SMG::Resource" d
 
 end
 
-describe SMG::Model, ".collect", "when :class options represents built-in typecast" do
+describe SMG::Model, ".collect", "when :class option represents built-in typecast" do
 
   before :each do
     @klass = Class.new { include SMG::Resource }

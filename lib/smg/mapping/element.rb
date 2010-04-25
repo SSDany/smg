@@ -2,7 +2,7 @@ module SMG #:nodoc:
   class Mapping #:nodoc:
 
     class Element
-      attr_reader :path, :name, :accessor, :data_class, :cast_to, :at
+      attr_reader :path, :name, :accessor, :data_class, :cast_to, :at, :context
 
       def initialize(path, options = {})
 
@@ -12,17 +12,26 @@ module SMG #:nodoc:
         @accessor   = @collection ? :"append_to_#{@name}" : :"#{@name}="
         @data_class = nil
         @cast_to    = nil
-        @context    = options[:context] #TODO: validations
+        @context    = nil
 
-        if klass = options[:class]
-          if Class === klass
-            raise ArgumentError, "#{klass} is not an SMG::Model" unless klass.include?(::SMG::Resource)
+        if options.key?(:context)
+          if Array === options[:context]
+            @context = options[:context].compact
+            @context.uniq!
+            @context = nil if @context.empty?
+          else
+            raise ArgumentError, ":context should be an Array"
+          end
+        end
+
+        if options.key?(:class)
+          klass = options[:class]
+          if SMG::Model === klass
             @data_class = klass
-          elsif Symbol === klass
-            raise ArgumentError, "#{klass} is not a valid typecast" unless TypeCasts.key?(klass)
+          elsif TypeCasts.key?(klass)
             @cast_to = klass
           else
-            raise ArgumentError, ":class should be an SMG::Model or a Symbol"
+            raise ArgumentError, ":class should be an SMG::Model or a valid typecast"
           end
         end
 
