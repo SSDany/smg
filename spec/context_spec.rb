@@ -10,7 +10,7 @@ describe SMG::Model do
   describe ".extract with context" do
 
     before :each do
-      @data = data = File.read(FIXTURES_DIR + 'fake/malus.xml')
+      @data = File.read(FIXTURES_DIR + 'fake/malus.xml')
     end
 
     it "does not extract data with the custom :context, when no context passed" do
@@ -33,7 +33,7 @@ describe SMG::Model do
 
     end
 
-    it "respects the the :context of elements and attributes" do
+    it "respects the :context of elements and attributes" do
 
       @klass.root 'spec'
 
@@ -109,7 +109,7 @@ describe SMG::Model do
   describe ".collect with context" do
 
     before :each do
-      @data = data = File.read(FIXTURES_DIR + 'discogs/Ophidian.xml')
+      @data = File.read(FIXTURES_DIR + 'discogs/Ophidian.xml')
     end
 
     it "does not collect data with the custom :context, when no context passed" do
