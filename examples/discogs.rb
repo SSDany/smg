@@ -20,17 +20,20 @@ class Label
   root 'resp/label'
   extract 'name'
   extract 'profile'
-  collect 'releases/release'  , :as => :releases, :class => Release
+  collect 'releases/release'  , :as => :releases, :class => Release, :context => [:with_releases]
 
 end
 
 data = File.read(ROOT.join('spec/fixtures/discogs/Genosha+Recordings.xml'))
-label = Label.parse(data)
 
+label = Label.parse(data)
 puts label.name
-puts "-"*80
 puts label.profile
-puts "-"*80
+puts label.releases.map { |release| "#{release.catno}: #{release.title}" }.join("\n")
+
+label = Label.parse(data,:with_releases)
+puts label.name
+puts label.profile
 puts label.releases.map { |release| "#{release.catno}: #{release.title}" }.join("\n")
 
 # EOF
