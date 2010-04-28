@@ -20,7 +20,7 @@ class Label
   root 'resp/label'
   extract 'name'
   extract 'profile'
-  collect 'releases/release'  , :as => :releases, :class => Release
+  collect 'releases/release'  , :as => :releases, :class => Release, :context => [:with_releases]
 
 end
 
@@ -31,6 +31,8 @@ puts label.name
 puts "-"*80
 puts label.profile
 puts "-"*80
+
+label = Label.parse(data,:with_releases)
 puts label.releases.map { |release| "#{release.catno}: #{release.title}" }.join("\n")
 
 # EOF
