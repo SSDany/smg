@@ -1,14 +1,15 @@
 GEMSPEC = Gem::Specification.new do |s|
 
   s.name = 'smg'
-  s.version = '0.0.2'
+  s.version = '0.1.0'
   s.platform = Gem::Platform::RUBY
 
   s.authors = %w[SSDany]
   s.email = 'inadsence@gmail.com'
   s.summary = 'Simple declaratibve XML parsing library. Backed by Nokogiri'
   s.description = <<-DESCR
-Object to xml mapping library with simple declarative syntax.
+XML to Object mapping library with simple declarative syntax.
+Supports 'contextual' parsing.
 Backed by Nokogiri's SAX Parser.
 DESCR
 
@@ -16,6 +17,10 @@ DESCR
   s.has_rdoc = true
   s.extra_rdoc_files = %w(README.rdoc)
   s.files = s.extra_rdoc_files + [
+    "examples/helper.rb",
+    "examples/discogs.rb",
+    "examples/twitter.rb",
+    "examples/plant.rb",
     "lib/smg/document.rb",
     "lib/smg/mapping/element.rb",
     "lib/smg/mapping/typecasts.rb",
