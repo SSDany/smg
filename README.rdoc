@@ -8,6 +8,7 @@ Backed by Nokogiri's SAX Parser.
 * Typecasting
 * Nested resources (aka has_one)
 * Collections (aka has_many)
+* Contextual parsing
 
 == EXAMPLES:
 
@@ -38,7 +39,7 @@ Backed by Nokogiri's SAX Parser.
 
   end
 
-=== discogs.com
+=== discogs.com (with context)
 
   class Label
 
@@ -49,10 +50,9 @@ Backed by Nokogiri's SAX Parser.
       extract :release  , :at => :id, :as => :discogs_id, :class => :integer
       extract :release  , :at => :status
 
-      root 'release'
-      extract :title
-      extract :catno
-      extract :artist
+      extract 'release/title'
+      extract 'release/catno'
+      extract 'release/artist'
 
     end
 
@@ -61,9 +61,17 @@ Backed by Nokogiri's SAX Parser.
     root 'resp/label'
     extract :name
     extract :profile
-    collect 'releases/release'  , :as => :releases, :class => Release
+    collect 'releases/release'  , :as => :releases, :class => Release, :context => [:with_releases]
 
   end
+
+  label = Label.parse(xml)
+  label.name #=> "name of the label"
+  label.releases #=> []
+
+  label = Label.parse(xml, :with_releases)
+  label.name #=> "name of the label"
+  label.releases #=> [#<Label::Release...>, ... #<Label::Release...>]
 
 == REQUIREMENTS:
 
