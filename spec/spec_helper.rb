@@ -7,7 +7,9 @@ begin
   require 'spec'
 
   SPEC_ROOT = Pathname(__FILE__).dirname.expand_path
+
   require SPEC_ROOT + 'lib/matchers/instance_methods'
+  require SPEC_ROOT + 'lib/helpers/http_helpers'
 
   FIXTURES_DIR = SPEC_ROOT + 'fixtures'
 
