@@ -2,15 +2,14 @@ module Spec #:nodoc:
   module Helpers #:nodoc:
     module HTTPHelpers
 
-      def http(uri, options = {})
-        timeout = options[:timeout] || SMG::HTTP::Request::DEFAULT_TIMEOUT
-        times = options[:times] || 1
-        uri = Addressable::URI.parse(uri)
+      def http(uri, proxy = nil)
         @http ||= mock('http')
-        Net::HTTP.should_receive(:start).
-        with(uri.host, uri.port).exactly(times).times.and_yield(@http)
-        @http.should_receive(:open_timeout=).with(timeout).exactly(times)
-        @http.should_receive(:read_timeout=).with(timeout).exactly(times)
+        uri = Addressable::URI.parse(uri)
+        args = (proxy && p = Addressable::URI.parse(proxy)) ?
+          [uri.host, uri.port, p.host, p.port, p.user, p.password] :
+          [uri.host, uri.port]
+
+        Net::HTTP.should_receive(:new).with(*args).and_return(@http)
       end
 
       def stub_response(code, message, *args)

@@ -7,10 +7,9 @@ module SMG #:nodoc:
   module HTTP #:nodoc:
     class Request
 
-      attr_reader :verb, :uri, :headers, :body, :limit, :timeout
+      attr_reader :verb, :uri, :headers, :body, :limit, :timeout, :proxy
 
-      DEFAULT_LIMIT   = 5
-      DEFAULT_TIMEOUT = 60
+      DEFAULT_LIMIT = 5
 
       VERBS = [Net::HTTP::Get, Net::HTTP::Post, Net::HTTP::Put, Net::HTTP::Delete, Net::HTTP::Head]
 
@@ -19,18 +18,19 @@ module SMG #:nodoc:
 
         @verb     = verb
         @uri      = Addressable::URI.parse(uri)
+        @proxy    = options[:proxy] ? Addressable::URI.parse(options[:proxy]) : nil
         @headers  = options[:headers] ? options[:headers].to_hash : {}
         @limit    = options[:no_follow] ? 1 : options[:limit] || DEFAULT_LIMIT
         @body     = options[:body]
-        @timeout  = options[:timeout] ? options[:timeout].to_i : DEFAULT_TIMEOUT
+        @timeout  = options[:timeout] ? options[:timeout].to_i : nil
       end
 
       def perform
-        connection do |http|
-          setup
-          response = http.request(@request)
-          handle_response(response)
-        end
+        setup
+        response = http.request(@request)
+        handle_response(response)
+      rescue Timeout::Error => e
+        raise TimeoutError, e.message
       end
 
       protected
@@ -58,7 +58,7 @@ module SMG #:nodoc:
       # 10.3.4 303 See Other
       # The response to the request can be found under a different URI and
       # SHOULD be retrieved using a GET method on that resource.
-      
+      #
       # 10.3.6 305 Use Proxy
       # The requested resource MUST be accessed through the proxy given by
       # the Location field. The Location field gives the URI of the proxy.
@@ -70,11 +70,16 @@ module SMG #:nodoc:
         location = response["Location"]
         raise RedirectionError.new(response, "Location field-value missed") unless location
 
-        @verb = Net::HTTP::Get if Net::HTTPSeeOther === response
-        raise RedirectionError.new(response, "automatical redirection is NOT allowed") unless
-          @verb == Net::HTTP::Get || @verb == Net::HTTP::Head
+        case response
+        when Net::HTTPUseProxy; @proxy = Addressable::URI.parse(location)
+        when Net::HTTPSeeOther; @verb, @uri = Net::HTTP::Get, Addressable::URI.parse(location)
+        else
+          raise RedirectionError.new(response, "automatical redirection is NOT allowed") unless
+            @verb == Net::HTTP::Get ||
+            @verb == Net::HTTP::Head
+          @uri = Addressable::URI.parse(location)
+        end
 
-        @uri = Addressable::URI.parse(location)
         perform
       end
 
@@ -86,9 +91,10 @@ module SMG #:nodoc:
              Net::HTTPMovedPermanently, # 301
              Net::HTTPFound,            # 302
              Net::HTTPSeeOther,         # 303
+             Net::HTTPUseProxy,         # 305
              Net::HTTPTemporaryRedirect # 307
 
-          raise RedirectionError.new(response, "redirection level too deep") if (@limit -= 1) < 0
+          raise RedirectionError.new(response, "redirection level too deep") unless (@limit -= 1) > 0
           perform_redirection(response)
         else
           raise ConnectionError.new(response)
@@ -102,16 +108,15 @@ module SMG #:nodoc:
         nil
       end
 
-      def connection(&block)
-        response = nil
-        Net::HTTP.start(@uri.host, @uri.port) do |http|
-          http.open_timeout = @timeout
-          http.read_timeout = @timeout
-          response = yield(http)
-        end
-        response
-      rescue Timeout::Error => e
-        raise TimeoutError, e.message
+      def http
+        http = @proxy ?
+          Net::HTTP.new(@uri.host, @uri.port, @proxy.host, @proxy.port, @proxy.user, @proxy.password) :
+          Net::HTTP.new(@uri.host, @uri.port)
+
+        return http unless @timeout
+        http.open_timeout = @timeout
+        http.read_timeout = @timeout
+        http
       end
 
     end
