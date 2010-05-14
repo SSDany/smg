@@ -96,7 +96,7 @@ module SMG #:nodoc:
       end
 
       def setup
-        @request = verb.new(@uri.to_s, @headers)
+        @request = verb.new(@uri.request_uri, @headers)
         @request.basic_auth(@uri.user, @uri.password) if @uri.user && @uri.password
         @request.body = @body if @body
         nil
