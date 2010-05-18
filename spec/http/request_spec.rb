@@ -12,7 +12,7 @@ describe SMG::HTTP::Request, "instantiation" do
 
   it "constructs a valid uri" do
     @request = SMG::HTTP::Request.new(Net::HTTP::Get, @uri)
-    @request.uri.to_s.should  == @uri.to_s
+    @request.uri.to_s.should  == @uri
     @request.uri.host.should  == "example.org"
     @request.uri.port.should  == 4567
     @request.uri.path.should  == "/answers/answer.xml"
@@ -45,6 +45,7 @@ describe SMG::HTTP::Request, "instantiation" do
 
   it "respects :proxy option" do
     @request = SMG::HTTP::Request.new(Net::HTTP::Post, @uri, :proxy => "http://uname:upasswd@proxyhost:6789")
+    @request.proxy.to_s.should == "http://uname:upasswd@proxyhost:6789"
     @request.proxy.host.should == "proxyhost"
     @request.proxy.port.should == 6789
     @request.proxy.user.should == "uname"
