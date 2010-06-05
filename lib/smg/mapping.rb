@@ -36,7 +36,10 @@ module SMG #:nodoc:
     private
 
     def normalize_path(path)
-      path.to_s.split("/")
+      path = path.to_s.squeeze("/")
+      path = path[0..-2] if path[-1] == ?/
+      path = path[1..-1] if path[0] == ?/
+      path.split("/")
     end
 
     def handle_path(path)
