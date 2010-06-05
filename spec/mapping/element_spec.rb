@@ -171,6 +171,28 @@ describe SMG::Mapping::Element do
 
   end
 
+  describe "#with?" do
+
+    it "returns true if the hash passed contains @with" do
+      e = SMG::Mapping::Element.new(['node'], :with => {"id" => "3", "status" => "accepted"})
+      e.should be_with("id" => "3", "status" => "accepted")
+      e.should be_with("id" => "3", "status" => "accepted", "key" => "value")
+    end
+
+    it "returns true if there are no @with conditions" do
+      e = SMG::Mapping::Element.new(['node','subnode'])
+      e.with.should == nil
+      e.should be_with("key" => "value")
+    end
+
+    it "returns false otherwise" do
+      e = SMG::Mapping::Element.new(['node'], :with => {"id" => "3", "status" => "accepted"})
+      e.should_not be_with("status" => "accepted")
+      e.should_not be_with({})
+    end
+
+  end
+
 end
 
 # EOF
