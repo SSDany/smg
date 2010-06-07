@@ -16,22 +16,30 @@ module SMG #:nodoc:
     def start_element(name, attrs = [])
 
       @stack << name
+      ahash = nil
 
       if doc = @docs.last
         doc.start_element(name, attrs)
-      elsif (thing = @mapping.nested[@stack]) && thing.in_context_of?(@context)
+      elsif (thing = @mapping.nested[@stack]) &&
+          thing.in_context_of?(@context) &&
+          thing.with?(ahash ||= Hash[*attrs])
+
         @docs << doc = Document.new(thing.data_class.new,@context,thing)
         doc.start_element(name, attrs)
       end
 
       if !attrs.empty? && maps = @mapping.attributes[@stack]
-        attrh = Hash[*attrs]
-        maps.values_at(*attrh.keys).compact.each do |m|
-          @object.__send__(m.accessor, m.cast(attrh[m.at])) if m.in_context_of?(@context)
+        maps.values_at(*(ahash ||= Hash[*attrs]).keys).compact.each do |m|
+          @object.__send__(m.accessor, m.cast(ahash[m.at])) if
+            m.in_context_of?(@context) &&
+            m.with?(ahash)
         end
       end
 
-      if (e = @mapping.elements[@stack]) && e.in_context_of?(@context)
+      if (e = @mapping.elements[@stack]) &&
+          e.in_context_of?(@context) &&
+          e.with?(ahash ||= Hash[*attrs])
+
         @element = e
         @chars = ""
       end

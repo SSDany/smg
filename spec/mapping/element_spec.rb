@@ -85,16 +85,13 @@ describe SMG::Mapping::Element do
         e.context.should be_nil
       end
 
-      it "removes nils and duplicates from @context" do
+      it "removes duplicates from @context" do
 
-        e = SMG::Mapping::Element.new(['node'], :context => [:foo, nil, :bar, :baz])
+        e = SMG::Mapping::Element.new(['node'], :context => [:foo, :bar, :baz])
         e.context.should == [:foo, :bar, :baz]
 
-        e = SMG::Mapping::Element.new(['node'], :context => [:foo, :bar, nil, :foo, :baz])
+        e = SMG::Mapping::Element.new(['node'], :context => [:foo, :bar, :foo, :bar, :baz, :baz])
         e.context.should == [:foo, :bar, :baz]
-
-        e = SMG::Mapping::Element.new(['node'], :context => [nil])
-        e.context.should be_nil
 
         # undestructive
         cct = [:foo, :foo, :bar]
@@ -103,9 +100,12 @@ describe SMG::Mapping::Element do
 
       end
 
-      it "raises an ArgumentError, if :context is not an Array" do
+      it "raises an ArgumentError, if :context is not an Array of Symbols" do
         lambda { e = SMG::Mapping::Element.new(['node'], :context => "something") }.
-        should raise_error ArgumentError, %r{should be an Array}
+        should raise_error ArgumentError, %r{should be an Array of Symbols}
+
+        lambda { e = SMG::Mapping::Element.new(['node'], :context => [42]) }.
+        should raise_error ArgumentError, %r{should be an Array of Symbols}
       end
 
     end
@@ -128,7 +128,7 @@ describe SMG::Mapping::Element do
 
   describe "#cast" do
 
-    it "returns the same value if there's no @cast_to" do
+    it "does nothing if there's no @cast_to" do
       e = SMG::Mapping::Element.new(['node'])
       thing = "42"
       e.cast(thing).should be_eql thing
@@ -173,7 +173,7 @@ describe SMG::Mapping::Element do
 
   describe "#with?" do
 
-    it "returns true if the hash passed contains @with" do
+    it "returns true if the Hash passed contains @with" do
       e = SMG::Mapping::Element.new(['node'], :with => {"id" => "3", "status" => "accepted"})
       e.should be_with("id" => "3", "status" => "accepted")
       e.should be_with("id" => "3", "status" => "accepted", "key" => "value")
