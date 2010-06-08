@@ -47,7 +47,7 @@ module SMG #:nodoc:
       resource = new
       doc = SMG::Document.new(resource,context)
       ::Nokogiri::XML::SAX::Parser.new(doc).parse(data)
-      resource.instance_variable_set(:@_parsed, true)
+      resource.parsed!
       resource
     end
 

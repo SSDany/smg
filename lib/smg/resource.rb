@@ -6,7 +6,11 @@ module SMG #:nodoc:
     end
 
     def parsed?
-      @_parsed
+      @_parsed ||= false
+    end
+
+    def parsed!
+      @_parsed = true
     end
 
   end

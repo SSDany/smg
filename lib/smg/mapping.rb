@@ -3,6 +3,7 @@ module SMG #:nodoc:
 
     attr_reader :elements, :nested, :attributes
     attr_reader :root
+    attr_reader :parsed
 
     def initialize
       @elements   = {}
@@ -31,6 +32,12 @@ module SMG #:nodoc:
 
     def use_root(path)
       @root = normalize_path(path)
+    end
+
+    def refresh!
+      @parsed ||= []
+      @parsed.clear
+      nil
     end
 
     private

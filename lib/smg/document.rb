@@ -11,9 +11,11 @@ module SMG #:nodoc:
       @thing    = thing
       @context  = context
       @chars    = ""
+
+      @mapping.refresh!
     end
 
-    def start_element(name, attrs = [])
+    def start_element(name, attrs)
 
       @stack << name
       ahash = nil
@@ -21,6 +23,7 @@ module SMG #:nodoc:
       if doc = @docs.last
         doc.start_element(name, attrs)
       elsif (thing = @mapping.nested[@stack]) &&
+          !@mapping.parsed.include?(thing.object_id) &&
           thing.in_context_of?(@context) &&
           thing.with?(ahash ||= Hash[*attrs])
 
@@ -30,16 +33,20 @@ module SMG #:nodoc:
 
       if !attrs.empty? && maps = @mapping.attributes[@stack]
         maps.values_at(*(ahash ||= Hash[*attrs]).keys).compact.each do |m|
-          @object.__send__(m.accessor, m.cast(ahash[m.at])) if
+          if !@mapping.parsed.include?(m.object_id) &&
             m.in_context_of?(@context) &&
             m.with?(ahash)
+
+            @object.__send__(m.accessor, m.cast(ahash[m.at]))
+            @mapping.parsed << m.object_id unless m.collection?
+          end
         end
       end
 
       if (e = @mapping.elements[@stack]) &&
+          !@mapping.parsed.include?(e.object_id) &&
           e.in_context_of?(@context) &&
           e.with?(ahash ||= Hash[*attrs])
-
         @element = e
         @chars = ""
       end
@@ -50,15 +57,17 @@ module SMG #:nodoc:
 
       if @element
         @object.__send__(@element.accessor, @element.cast(@chars))
+        @mapping.parsed << @element.object_id unless @element.collection?
         @chars = ""
         @element = nil
       end
 
       if doc = @docs.last
         doc.end_element(name)
-        if doc.thing.path == @stack
-          @object.__send__(doc.thing.accessor, doc.object)
+        if (t = doc.thing).path == @stack
+          @object.__send__(t.accessor, doc.object)
           @docs.pop
+          @mapping.parsed << t.object_id unless t.collection?
         end
       end
 

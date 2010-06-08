@@ -1,5 +1,5 @@
 <games>
-  <game AppID="220"                     date="2004-11-16">Half-Life 2</game>
+  <game AppID="220" type="fullprice"    date="2004-11-16">Half-Life 2</game>
   <game AppID="380" type="episodic"     date="2006-06-01">Half-Life 2: Episode One</game>
   <game AppID="420" type="episodic"     date="2007-10-10">Half-Life 2: Episode Two</game>
   <game AppID="NA"  type="episodic"     date="To be announced">Half-Life 2: Episode Three</game>
