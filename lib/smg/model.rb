@@ -44,9 +44,15 @@ module SMG #:nodoc:
     end
 
     def parse(data, context = nil)
-      resource = new
-      doc = SMG::Document.new(resource,context)
+      doc = SMG::Document.new(resource = new,context)
       ::Nokogiri::XML::SAX::Parser.new(doc).parse(data)
+      resource.parsed!
+      resource
+    end
+
+    def parse_file(fname, context = nil)
+      doc = SMG::Document.new(resource = new,context)
+      ::Nokogiri::XML::SAX::Parser.new(doc).parse_file(fname)
       resource.parsed!
       resource
     end
