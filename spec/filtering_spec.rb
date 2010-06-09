@@ -9,7 +9,7 @@ describe SMG::Model, ".extract" do
 
   describe "using :with option" do
 
-    it "extracts content of the element if conditions are OK" do
+    it "extracts the text of an element if conditions are OK" do
       @klass.extract 'games/game', :as => :title, :with => {:type => "episodic", :AppID => 420}
       game = @klass.parse(@data)
       game.title.should == "Half-Life 2: Episode Two"
@@ -33,7 +33,7 @@ describe SMG::Model, ".extract" do
 
   describe "using :with and :at options together" do
 
-    it "extracts content of the element if conditions are OK" do
+    it "extracts the text of an element if conditions are OK" do
       conditions = {:type => "modification", :date => "2007-10-06"}
       @klass.extract 'games/game', :as => :steam_application_id, :with => conditions, :at => "AppID", :class => :integer
       @klass.extract 'games/game', :as => :title, :with => conditions
@@ -63,7 +63,7 @@ describe SMG::Model, ".extract" do
       @game.extract :game, :as => :title
     end
 
-    it "extracts content of the element if conditions are OK" do
+    it "extracts the text of an element if conditions are OK" do
       conditions = {:type => "modification", :date => "2007-10-06"}
       @klass.extract 'games/game', :class => @game, :with => conditions
       parsed = @klass.parse(@data)
@@ -133,7 +133,7 @@ describe SMG::Model, ".collect" do
       @game.extract :game, :as => :title
     end
 
-    it "extracts content of the element if conditions are OK" do
+    it "collects resources if conditions are OK" do
       conditions = {:type => "modification"}
       @klass.collect 'games/game', :class => @game, :with => conditions, :as => :games
       collection = @klass.parse(@data)
@@ -150,7 +150,7 @@ describe SMG::Model, ".collect" do
       collection.games[1].date.should == "To be announced"
     end
 
-    it "extracts nothing otherwise" do
+    it "collects nothing otherwise" do
       conditions = {:type => "unknown"}
       @klass.collect 'games/game', :class => @game, :with => conditions, :as => :games
       collection = @klass.parse(@data)
@@ -160,3 +160,5 @@ describe SMG::Model, ".collect" do
   end
 
 end
+
+# EOF
