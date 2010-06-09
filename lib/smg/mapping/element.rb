@@ -64,7 +64,8 @@ module SMG #:nodoc:
       def normalize_conditions(conditions)
         ret = {}
         conditions.each do |k,v|
-          ret[k.to_s] = v #.to_s
+          v = v.to_s unless v.nil?
+          ret[k.to_s] = v
         end
         ret
       end

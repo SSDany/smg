@@ -10,11 +10,15 @@ describe SMG::Model, ".extract" do
   describe "using :with option" do
 
     it "extracts content of the element if conditions are OK" do
-      @klass.extract 'games/game', :as => :title, :with => {:type => "episodic", :AppID => "420"}
+      @klass.extract 'games/game', :as => :title, :with => {:type => "episodic", :AppID => 420}
       game = @klass.parse(@data)
       game.title.should == "Half-Life 2: Episode Two"
 
       @klass.extract 'games/game', :as => :title, :with => {:type => "episodic", :date => "To be announced"}
+      game = @klass.parse(@data)
+      game.title.should == "Half-Life 2: Episode Three"
+
+      @klass.extract 'games/game', :as => :title, :with => {:type => "episodic", :AppID => nil} # i.e. without @AppID attribute
       game = @klass.parse(@data)
       game.title.should == "Half-Life 2: Episode Three"
     end
