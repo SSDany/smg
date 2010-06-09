@@ -80,7 +80,23 @@ describe SMG::Model, ".collect", "without :class option" do
   end
 
   it "is able to build multiple datasets" do
-    pending "write me, please!"
+      custom_xml = <<-XML
+<releases>
+  <release id="2259548" status="Accepted" type="TrackAppearance">Signal Flow Podcast 03</release>
+  <release id="2283715" status="Accepted" type="TrackAppearance">United Hardcore Forces</release>
+  <release id="2283652" status="Accepted" type="TrackAppearance">Warp Madness</release>
+  <release id="1775742" status="Accepted" type="UnofficialRelease">Stalker 2.9 Level 3 Compilation</release>
+</release>
+XML
+
+    @klass.collect 'releases/release', :at => :id, :as => :ids
+    @klass.collect 'releases/release', :at => :type, :as => :types
+    @klass.collect 'releases/release', :as => :titles
+
+    collection = @klass.parse(custom_xml)
+    collection.ids.should     == ["2259548", "2283715", "2283652", "1775742"]
+    collection.types.should   == ["TrackAppearance", "TrackAppearance", "TrackAppearance", "UnofficialRelease"]
+    collection.titles.should  == ["Signal Flow Podcast 03", "United Hardcore Forces", "Warp Madness", "Stalker 2.9 Level 3 Compilation"]
   end
 
   it "collects nothing when there's no matching elements" do
