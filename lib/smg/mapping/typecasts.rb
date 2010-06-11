@@ -24,7 +24,8 @@ module SMG #:nodoc:
       self.typecasts = {}
       self.typecasts[ :string   ] = lambda{ |v| v.to_s }
       self.typecasts[ :integer  ] = lambda{ |v| v.to_i }
-      self.typecasts[ :boolean  ] = lambda{ |v| v.to_s.strip != 'false' }
+      self.typecasts[ :float    ] = lambda{ |v| v.to_f }
+      self.typecasts[ :boolean  ] = lambda{ |v| v.nil? ? nil : (v.to_s.strip != 'false') }
       self.typecasts[ :symbol   ] = lambda{ |v| v.to_sym }
       self.typecasts[ :datetime ] = lambda{ |v| Time.parse(v).utc }
       self.typecasts[ :date     ] = lambda{ |v| Date.parse(v) }
