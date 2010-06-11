@@ -14,16 +14,13 @@ describe SMG::Resource do
 
   end
 
-  describe "#parsed?" do
+  describe "#parsed!" do
 
-    it "returns true if resource was build by .parse method" do
-      resource = @klass.parse("<somexml/>")
-      resource.should be_parsed
-    end
-
-    it "returns false otherwise" do
+    it "marks resource as parsed" do
       resource = @klass.new
       resource.should_not be_parsed
+      resource.parsed!
+      resource.should be_parsed
     end
 
   end
