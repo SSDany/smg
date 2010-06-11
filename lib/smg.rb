@@ -11,4 +11,8 @@ require 'smg/model'
 require 'smg/resource'
 require 'smg/document'
 
+module SMG
+  autoload :HTTP, 'smg/http'
+end
+
 # EOF
