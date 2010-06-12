@@ -6,72 +6,16 @@ Backed by Nokogiri's SAX Parser.
 == FEATURES:
 
 * Typecasting
-* Nested resources (aka has_one)
-* Collections (aka has_many)
+* Nested resources
+* Collections
+* Conditions
 * Contextual parsing
+* HTTP interaction
 
 == EXAMPLES:
 
-=== Twitter
-
-  class Status
-    include SMG::Resource
-
-    root 'status'
-
-    extract :id         , :class => :integer, :as => :status_id
-    extract :created_at , :class => :datetime
-    extract :text
-
-  end
-
-  class User
-    include SMG::Resource
-
-    root 'user'
-
-    extract :id                 , :class => :integer, :as => :twitter_id
-    extract :location           , :class => :string
-    extract :status             , :class => Status
-    extract :created_at         , :class => :datetime
-    extract :name
-    extract :screen_name
-
-  end
-
-=== discogs.com (with context)
-
-  class Label
-
-    class Release
-
-      include SMG::Resource
-
-      extract :release  , :at => :id, :as => :discogs_id, :class => :integer
-      extract :release  , :at => :status
-
-      extract 'release/title'
-      extract 'release/catno'
-      extract 'release/artist'
-
-    end
-
-    include SMG::Resource
-
-    root 'resp/label'
-    extract :name
-    extract :profile
-    collect 'releases/release'  , :as => :releases, :class => Release, :context => [:with_releases]
-
-  end
-
-  label = Label.parse(xml)
-  label.name #=> "name of the label"
-  label.releases #=> []
-
-  label = Label.parse(xml, :with_releases)
-  label.name #=> "name of the label"
-  label.releases #=> [#<Label::Release...>, ... #<Label::Release...>]
+See examples directory:
+http://github.com/SSDany/smg/tree/master/examples
 
 == REQUIREMENTS:
 
