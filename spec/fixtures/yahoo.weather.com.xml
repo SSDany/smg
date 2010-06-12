@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<rss version="2.0" xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+  <channel>
+
+    <title>Yahoo! Weather - Paris, FR</title>
+    <link>http://us.rd.yahoo.com/dailynews/rss/weather/Paris__FR/*http://weather.yahoo.com/forecast/FRXX0076_c.html</link>
+    <description>Yahoo! Weather for Paris, FR</description>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 12 Jun 2010 2:30 pm CEST</lastBuildDate>
+    <ttl>60</ttl>
+    <yweather:location city="Paris" region=""   country="France"/>
+
+    <yweather:units temperature="C" distance="km" pressure="mb" speed="km/h"/>
+    <yweather:wind chill="19"   direction="330"   speed="19.31" />
+    <yweather:atmosphere humidity="68"  visibility="9.99"  pressure="982.05"  rising="0" />
+    <yweather:astronomy sunrise="5:47 am"   sunset="9:53 pm"/>
+
+    <image>
+      <title>Yahoo! Weather</title>
+      <width>142</width>
+      <height>18</height>
+      <link>http://weather.yahoo.com</link>
+      <url>http://l.yimg.com/a/i/us/nws/th/main_142b.gif</url>
+    </image>
+
+    <item>
+      <title>Conditions for Paris, FR at 2:30 pm CEST</title>
+      <geo:lat>48.86</geo:lat>
+      <geo:long>2.34</geo:long>
+      <link>http://us.rd.yahoo.com/dailynews/rss/weather/Paris__FR/*http://weather.yahoo.com/forecast/FRXX0076_c.html</link>
+      <pubDate>Sat, 12 Jun 2010 2:30 pm CEST</pubDate>
+      <yweather:condition  text="Mostly Cloudy"  code="28"  temp="19"  date="Sat, 12 Jun 2010 2:30 pm CEST" />
+      <description><![CDATA[
+      <img src="http://l.yimg.com/a/i/us/we/52/28.gif"/><br />
+      <b>Current Conditions:</b><br />
+      Mostly Cloudy, 19 C<BR />
+      <BR /><b>Forecast:</b><BR />
+      Sat - Rain. High: 22 Low: 11<br />
+      Sun - Mostly Cloudy. High: 21 Low: 12<br />
+      <br />
+      <a href="http://us.rd.yahoo.com/dailynews/rss/weather/Paris__FR/*http://weather.yahoo.com/forecast/FRXX0076_c.html">Full Forecast at Yahoo! Weather</a><BR/><BR/>
+      (provided by <a href="http://www.weather.com" >The Weather Channel</a>)<br/>
+      ]]></description>
+      <yweather:forecast day="Sat" date="12 Jun 2010" low="11" high="22" text="Rain" code="12" />
+      <yweather:forecast day="Sun" date="13 Jun 2010" low="12" high="21" text="Mostly Cloudy" code="28" />
+      <guid isPermaLink="false">FRXX0076_2010_06_12_14_30_CEST</guid>
+    </item>
+
+  </channel>
+</rss><!-- api3.weather.ch1.yahoo.com compressed/chunked Sat Jun 12 06:09:49 PDT 2010 -->

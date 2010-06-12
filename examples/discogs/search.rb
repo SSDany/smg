@@ -45,9 +45,16 @@ end
 
 search = Discogs.search("all", "Genosha Recordings")
 
-p search.exactresults.first.resource_type #=> "label"
-p search.exactresults.first.title         #=> "Genosha Recordings"
-p search.exactresults.first.uri           #=> "http://www.discogs.com/label/Genosha+Recordings"
-p search.results.size                     #=> 20
+puts <<-RESULT
+    type: #{search.exactresults.first.resource_type}
+   title: #{search.exactresults.first.title}
+     URI: #{search.exactresults.first.uri}
+   total: #{search.results.size}
+RESULT
+
+#    type: label
+#   title: Genosha Recordings
+#     URI: http://www.discogs.com/label/Genosha+Recordings
+#   total: 20
 
 # EOF

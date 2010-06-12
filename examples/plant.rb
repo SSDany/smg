@@ -20,7 +20,7 @@ class Plant
   extract 'genus'             , :context => [:classification]
   extract 'binomial'
   extract 'conservation'      , :context => [:conservation, :info], :class => Conservation
-  collect 'synonims/binomial' , :context => [:synonims], :as => :synonims, 
+  collect 'synonims/binomial' , :context => [:synonims], :as => :synonims
 
 end
 
@@ -84,6 +84,5 @@ puts plant.conservation.status  #=> nil
 puts plant.conservation.code    #=> "NE"
 puts plant.conservation.status  #=> nil
 puts plant.synonims             #=> []
-
 
 # EOF

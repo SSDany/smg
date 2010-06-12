@@ -5,8 +5,8 @@ class Status
 
   root 'status'
 
-  extract :id         , :class => :integer, :as => :status_id
-  extract :created_at , :class => :datetime
+  extract :id                 , :class => :integer, :as => :status_id
+  extract :created_at         , :class => :datetime
   extract :text
 
 end
@@ -28,8 +28,11 @@ end
 data = File.read(ROOT.join('spec/fixtures/twitter/pipopolam.xml'))
 user = User.parse(data)
 
-puts "#{user.screen_name} (#{user.name}), since #{user.created_at.strftime('%Y.%m.%d')}"
-puts user.location
-puts user.status.text
+puts <<-EOS
+      ID: #{user.twitter_id}
+          #{user.screen_name} (#{user.name}), since #{user.created_at.strftime('%Y.%m.%d')}
+location: #{user.location}
+  status: #{user.status.text}
+EOS
 
 # EOF
