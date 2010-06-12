@@ -9,9 +9,20 @@ describe SMG::Mapping::Element do
       e.name.should == :subnode
       e.accessor.should == :subnode=
 
+      e = SMG::Mapping::Element.new(['node','ns:subnode'])
+      e.name.should == :ns_subnode
+      e.accessor.should == :ns_subnode=
+
       e = SMG::Mapping::Element.new(['node','subnode'], :nested => true)
       e.name.should == :subnode
       e.accessor.should == :subnode=
+
+      e = SMG::Mapping::Element.new(['node','ns:subnode'], :nested => true)
+      e.name.should == :ns_subnode
+      e.accessor.should == :ns_subnode=
+    end
+
+    it "respects namespaces" do
     end
 
     it "respects :at option" do
@@ -19,7 +30,15 @@ describe SMG::Mapping::Element do
       e.name.should == :something
       e.accessor.should == :something=
 
+      e = SMG::Mapping::Element.new(['node','ns:subnode'], :at => :something)
+      e.name.should == :something
+      e.accessor.should == :something=
+
       e = SMG::Mapping::Element.new(['node','subnode'], :at => :something, :nested => true)
+      e.name.should == :something
+      e.accessor.should == :something=
+
+      e = SMG::Mapping::Element.new(['node','ns:subnode'], :at => :something, :nested => true)
       e.name.should == :something
       e.accessor.should == :something=
     end
@@ -29,7 +48,15 @@ describe SMG::Mapping::Element do
       e.name.should == :something
       e.accessor.should == :something=
 
+      e = SMG::Mapping::Element.new(['node','ns:subnode'], :at => :whatever, :as => :something)
+      e.name.should == :something
+      e.accessor.should == :something=
+
       e = SMG::Mapping::Element.new(['node','subnode'], :as => :whatever, :nested => true)
+      e.name.should == :whatever
+      e.accessor.should == :whatever=
+
+      e = SMG::Mapping::Element.new(['node','ns:subnode'], :as => :whatever, :nested => true)
       e.name.should == :whatever
       e.accessor.should == :whatever=
     end
@@ -39,7 +66,15 @@ describe SMG::Mapping::Element do
       e.name.should == :subnodes
       e.accessor.should == :append_to_subnodes
 
+      e = SMG::Mapping::Element.new(['node','ns:subnodes'], :collection => true)
+      e.name.should == :ns_subnodes
+      e.accessor.should == :append_to_ns_subnodes
+
       e = SMG::Mapping::Element.new(['node','subnodes'], :at => :something, :collection => true)
+      e.name.should == :something
+      e.accessor.should == :append_to_something
+
+      e = SMG::Mapping::Element.new(['node','ns:subnodes'], :at => :something, :collection => true)
       e.name.should == :something
       e.accessor.should == :append_to_something
 
@@ -47,7 +82,15 @@ describe SMG::Mapping::Element do
       e.name.should == :something
       e.accessor.should == :append_to_something
 
+      e = SMG::Mapping::Element.new(['node','ns:subnodes'], :at => :whatever, :as => :something, :collection => true)
+      e.name.should == :something
+      e.accessor.should == :append_to_something
+
       e = SMG::Mapping::Element.new(['node','subnodes'], :as => :something, :collection => true)
+      e.name.should == :something
+      e.accessor.should == :append_to_something
+
+      e = SMG::Mapping::Element.new(['node','ns:subnodes'], :as => :something, :collection => true)
       e.name.should == :something
       e.accessor.should == :append_to_something
     end

@@ -6,7 +6,7 @@ module SMG #:nodoc:
 
       def initialize(path, options = {})
 
-        @name       = (options[:as] || options[:at] || path.last).to_sym
+        @name       = (options[:as] || options[:at] || path.last.gsub(":","_")).to_sym
         @path       = path
         @collection = !!options[:collection]
         @with       = options[:with] ? normalize_conditions(options[:with]) : nil
