@@ -1,7 +1,7 @@
 GEMSPEC = Gem::Specification.new do |s|
 
   s.name = 'smg'
-  s.version = '0.2.0'
+  s.version = '0.2.1'
   s.platform = Gem::Platform::RUBY
 
   s.authors = %w[SSDany]
@@ -29,6 +29,7 @@ DESCR
     "lib/smg/resource.rb",
     "lib/smg/version.rb",
     "lib/smg.rb",
+    "examples/crazy.rb",
     "examples/discogs/label.rb",
     "examples/discogs/search.rb",
     "examples/helper.rb",
