@@ -197,4 +197,23 @@ describe SMG::Model, ".extract" do
 
 end
 
+describe SMG::Model, ".extract" do
+
+  before :each do
+    @klass = Class.new { include SMG::Resource }
+    @data = "<thing>just<another>yetanother</another>spec</thing>"
+  end
+
+  it "handles each element independently" do
+    @klass.extract :thing
+    parsed = @klass.parse(@data)
+    parsed.thing.should == "justyetanotherspec"
+
+    @klass.extract "thing/another"
+    parsed = @klass.parse(@data)
+    parsed.thing.should == "justyetanotherspec" # NOT "justspec"
+    parsed.another.should == "yetanother"
+  end
+
+end
 # EOF

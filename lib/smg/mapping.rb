@@ -34,12 +34,6 @@ module SMG #:nodoc:
       @root = normalize_path(path)
     end
 
-    def refresh!
-      @parsed ||= []
-      @parsed.clear
-      nil
-    end
-
     private
 
     def normalize_path(path)

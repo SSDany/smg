@@ -116,7 +116,7 @@ describe SMG::Model, ".collect", "when :class option represents SMG::Resource" d
     @data = data = File.read(FIXTURES_DIR + 'discogs/Genosha+Recordings.xml')
   end
 
-  before :all do
+  before :each do
     @release_class = Class.new { include SMG::Resource }
     @release_class.extract 'release'       , :at => :id      , :as => :discogs_id
     @release_class.extract 'release'       , :at => :status
@@ -206,7 +206,7 @@ describe SMG::Model, ".collect", "with nested collections" do
     @data = data = File.read(FIXTURES_DIR + 'discogs/948224.xml')
   end
 
-  before :all do
+  before :each do
     @artist_class = Class.new { include SMG::Resource }
     @artist_class.root 'artist'
     @artist_class.extract :name
@@ -217,36 +217,54 @@ describe SMG::Model, ".collect", "with nested collections" do
     @track_class.extract :position
     @track_class.extract :title
     @track_class.extract :duration
-    @track_class.collect 'extraartists/artist/name', :as => :extra_artist_names
     @track_class.collect 'extraartists/artist', :as => :extra_artists, :class => @artist_class
   end
 
-  it "supports nested collections" do
-    @klass.root 'resp/release'
-    @klass.collect 'tracklist/track'        , :as => :tracks, :class => @track_class
-    @klass.collect 'tracklist/track/title'  , :as => :tracklist
-    release = @klass.parse(@data)
+  after :each do
+    @release.tracks.should be_an_instance_of ::Array
+    @release.tracks.size.should == 6
 
-    release.tracklist.should be_an_instance_of ::Array
-    release.tracklist.size.should == 6
-    release.tracklist.should == ["Butterfly V.I.P. (VIP Edit By Ophidian)", "Butterfly V.I.P. (Interlude By Cubist Boy & Tapage)", "Butterfly V.I.P. (Original Version)", "Hammerhead V.I.P. (VIP Edit By Ophidian)", "Hammerhead V.I.P. (Interlude By Cubist Boy & Tapage)", "Hammerhead V.I.P. (Original Version)"]
-
-    release.tracks.should be_an_instance_of ::Array
-    release.tracks.size.should == 6
-
-    track = release.tracks[1]
+    track = @release.tracks[1]
     track.position.should == 'A2'
     track.title.should == 'Butterfly V.I.P. (Interlude By Cubist Boy & Tapage)'
     track.duration.should == '1:24'
-
-    track.extra_artist_names.should be_an_instance_of ::Array
-    track.extra_artist_names.size.should == 2
-    track.extra_artist_names.should == ['Cubist Boy', 'Tapage']
 
     track.extra_artists.should be_an_instance_of ::Array
     track.extra_artists.size.should == 2
     track.extra_artists[1].name.should == 'Tapage'
     track.extra_artists[1].role.should == 'Co-producer'
+  end
+
+  it "supports nested collections" do
+    @klass.root 'resp/release'
+    @klass.collect 'tracklist/track', :as => :tracks, :class => @track_class
+
+    @release = @klass.parse(@data)
+  end
+
+  it "handles each collection independently" do
+
+    @track_class.collect 'extraartists/artist/name', :as => :extra_artist_names
+
+    @klass.root 'resp/release/tracklist'
+    @klass.collect 'track'                      , :as => :tracks, :class => @track_class
+    @klass.collect 'track/title'                , :as => :tracklist
+    @klass.collect 'track/extraartists/artist'  , :as => :extra_artists, :class => @artist_class
+
+    @release = @klass.parse(@data)
+
+    @release.tracklist.should be_an_instance_of ::Array
+    @release.tracklist.size.should == 6
+    @release.tracklist.should == ["Butterfly V.I.P. (VIP Edit By Ophidian)", "Butterfly V.I.P. (Interlude By Cubist Boy & Tapage)", "Butterfly V.I.P. (Original Version)", "Hammerhead V.I.P. (VIP Edit By Ophidian)", "Hammerhead V.I.P. (Interlude By Cubist Boy & Tapage)", "Hammerhead V.I.P. (Original Version)"]
+
+    @release.tracks.should be_an_instance_of ::Array
+    @release.tracks.size.should == 6
+
+    @release.extra_artists.should be_an_instance_of ::Array
+    @release.extra_artists.size.should == 6
+    @release.extra_artists[2].name.should == 'Tapage'
+    @release.extra_artists[2].role.should == 'Co-producer'
+
   end
 
 end
