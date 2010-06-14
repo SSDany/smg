@@ -132,9 +132,10 @@ class YWeather
 
   root 'rss/channel/item'
 
+  extract "title"
+  extract "description"
   extract "geo:lat"               , :as => :latitude
   extract "geo:long"              , :as => :longitude
-  extract "title"                 , :as => :title
   extract "yweather:condition"    , :as => :current     , :class => Condition
   collect "yweather:forecast"     , :as => :forecasts   , :class => Forecast
 

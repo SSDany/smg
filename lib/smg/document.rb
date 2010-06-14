@@ -73,6 +73,10 @@ module SMG #:nodoc:
       @elements.each { |e| e.last << string }
     end
 
+    def cdata_block(string)
+      characters(string)
+    end
+
   end
 end
 
