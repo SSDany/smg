@@ -11,7 +11,7 @@ module SMG #:nodoc:
 
         def [](key,value)
           return typecasts[key][value] if typecasts.key?(key)
-          raise ArgumentError, "Can't typecast to #{key.inspect}"
+          raise ArgumentError, "Can't typecast #{value.class} into #{key.inspect}"
         end
 
         def key?(key)

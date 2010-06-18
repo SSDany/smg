@@ -3,7 +3,6 @@ module SMG #:nodoc:
 
     attr_reader :elements, :nested, :attributes
     attr_reader :root
-    attr_reader :parsed
 
     def initialize
       @elements   = {}

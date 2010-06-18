@@ -1,6 +1,6 @@
 require File.expand_path File.join(File.dirname(__FILE__), 'spec_helper')
 
-describe SMG::Model, ".extract" do
+describe SMG::Model, "#extract" do
 
   before :each do
     @klass = Class.new { include SMG::Resource }
@@ -9,7 +9,7 @@ describe SMG::Model, ".extract" do
 
   describe "using :with option" do
 
-    it "extracts the text of an element if conditions are OK" do
+    it "extracts characters if element has suitable attributes" do
       @klass.extract 'games/game', :as => :title, :with => {:type => "episodic", :AppID => 420}
       game = @klass.parse(@data)
       game.title.should == "Half-Life 2: Episode Two"
@@ -23,7 +23,7 @@ describe SMG::Model, ".extract" do
       game.title.should == "Half-Life 2: Episode Three"
     end
 
-    it "extracts nothing otherwise" do
+    it "does nothing otherwise" do
       @klass.extract 'games/game', :as => :title, :with => {:type => "episodic", :AppID => "malformed"}
       game = @klass.parse(@data)
       game.title.should == nil
@@ -33,22 +33,18 @@ describe SMG::Model, ".extract" do
 
   describe "using :with and :at options together" do
 
-    it "extracts the text of an element if conditions are OK" do
+    it "extracts attribute if element has suitable attributes" do
       conditions = {:type => "modification", :date => "2007-10-06"}
       @klass.extract 'games/game', :as => :steam_application_id, :with => conditions, :at => "AppID", :class => :integer
-      @klass.extract 'games/game', :as => :title, :with => conditions
       game = @klass.parse(@data)
       game.steam_application_id.should == 380
-      game.title.should == "Minerva: Metastasis"
     end
 
-    it "extracts nothing otherwise" do
+    it "does nothing otherwise" do
       conditions = {:type => "modification", :date => "fake"}
       @klass.extract 'games/game', :as => :steam_application_id, :with => conditions, :at => "AppID", :class => :integer
-      @klass.extract 'games/game', :as => :title, :with => conditions
       game = @klass.parse(@data)
       game.steam_application_id.should == nil
-      game.title.should == nil
     end
 
   end
@@ -63,7 +59,7 @@ describe SMG::Model, ".extract" do
       @game.extract :game, :as => :title
     end
 
-    it "extracts the text of an element if conditions are OK" do
+    it "builds nested resource if element has suitable attributes" do
       conditions = {:type => "modification", :date => "2007-10-06"}
       @klass.extract 'games/game', :class => @game, :with => conditions
       parsed = @klass.parse(@data)
@@ -74,7 +70,7 @@ describe SMG::Model, ".extract" do
       parsed.game.date.should == "2007-10-06"
     end
 
-    it "extracts nothing otherwise" do
+    it "does nothing otherwise" do
       conditions = {:type => "modification", :date => "malformed"}
       @klass.extract 'games/game', :class => @game, :with => conditions
       parsed = @klass.parse(@data)
@@ -85,7 +81,7 @@ describe SMG::Model, ".extract" do
 
 end
 
-describe SMG::Model, ".collect" do
+describe SMG::Model, "#collect" do
 
   before :each do
     @klass = Class.new { include SMG::Resource }
@@ -94,13 +90,13 @@ describe SMG::Model, ".collect" do
 
   describe "using :with option" do
 
-    it "collects texts, if conditions are OK" do
+    it "collects characters of suitable elements" do
       @klass.collect 'games/game', :with => {"type" => "episodic"}, :as => :titles
       parsed = @klass.parse(@data)
       parsed.titles.should == ["Half-Life 2: Episode One", "Half-Life 2: Episode Two", "Half-Life 2: Episode Three"]
     end
 
-    it "collects texts, if conditions are OK" do
+    it "does nothing otherwise" do
       @klass.collect 'games/game', :with => {"type" => "unknowb"}, :as => :titles
       parsed = @klass.parse(@data)
       parsed.titles.should be_empty
@@ -110,13 +106,13 @@ describe SMG::Model, ".collect" do
 
   describe "using :with and :at options together" do
 
-    it "collects attributes, if conditions are OK" do
+    it "collects attributes of suitable elements" do
       @klass.collect 'games/game', :with => {"type" => "episodic"}, :at => :date, :as => :dates
       parsed = @klass.parse(@data)
       parsed.dates.should == ["2006-06-01", "2007-10-10", "To be announced"]
     end
 
-    it "collects nothing otherwise" do
+    it "does nothing otherwise" do
       @klass.collect 'games/game', :with => {"type" => "unknown"}, :at => :date, :as => :dates
       parsed = @klass.parse(@data)
       parsed.dates.should be_empty
@@ -133,7 +129,7 @@ describe SMG::Model, ".collect" do
       @game.extract :game, :as => :title
     end
 
-    it "collects resources if conditions are OK" do
+    it "builds collection from suitable elements" do
       conditions = {:type => "modification"}
       @klass.collect 'games/game', :class => @game, :with => conditions, :as => :games
       collection = @klass.parse(@data)
@@ -150,7 +146,7 @@ describe SMG::Model, ".collect" do
       collection.games[1].date.should == "To be announced"
     end
 
-    it "collects nothing otherwise" do
+    it "does nothing otherwise" do
       conditions = {:type => "unknown"}
       @klass.collect 'games/game', :class => @game, :with => conditions, :as => :games
       collection = @klass.parse(@data)

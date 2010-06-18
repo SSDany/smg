@@ -8,7 +8,7 @@ describe SMG::Resource do
 
   describe "when included" do
 
-    it "extends class with the SMG::Model" do
+    it "extends base with the SMG::Model module" do
       @klass.should be_an SMG::Model
     end
 
@@ -16,7 +16,7 @@ describe SMG::Resource do
 
   describe "#parsed!" do
 
-    it "marks resource as parsed" do
+    it "marks self as parsed" do
       resource = @klass.new
       resource.should_not be_parsed
       resource.parsed!

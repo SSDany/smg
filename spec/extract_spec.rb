@@ -1,6 +1,6 @@
 require File.expand_path File.join(File.dirname(__FILE__), 'spec_helper')
 
-describe SMG::Model, ".extract" do
+describe SMG::Model, "#extract" do
 
   before :each do
     @klass = Class.new { include SMG::Resource }
@@ -15,7 +15,7 @@ describe SMG::Model, ".extract" do
     @klass.should have_instance_method :whatever=
   end
 
-  it "never overrides readers" do
+  it "never overrides reader" do
     @klass.class_eval "def kingdom; return @kingdom.to_s.upcase; end"
     @klass.root 'spec'
     @klass.extract :kingdom
@@ -24,7 +24,7 @@ describe SMG::Model, ".extract" do
     malus.instance_variable_get(:@kingdom).should == "Plantae"
   end
 
-  it "never overrides writers" do
+  it "never overrides writer" do
     @klass.class_eval "def kingdom=(value); @kingdom = value.to_s.upcase; end"
     @klass.root 'spec'
     @klass.extract :kingdom
@@ -33,21 +33,21 @@ describe SMG::Model, ".extract" do
     malus.instance_variable_get(:@kingdom).should == "PLANTAE"
   end
 
-  it "extracts an empty String if there's an empty element" do
-    @klass.root 'spec'
-    @klass.extract :additional
-    malus = @klass.parse(@data)
-    malus.additional.should == ""
-  end
-
-  it "extracts nothing if there's no appropriate element" do
+  it "does nothing if there's no appropriate element" do
     @klass.root 'spec'
     @klass.extract :bogus
     malus = @klass.parse(@data)
     malus.bogus.should == nil
   end
 
-  it "extracts the text of an element otherwise" do
+  it "extracts an empty String if appropriate element is empty" do
+    @klass.root 'spec'
+    @klass.extract :additional
+    malus = @klass.parse(@data)
+    malus.additional.should == ""
+  end
+
+  it "extracts characters otherwise" do
     @klass.root 'spec'
     @klass.extract :genus
     malus = @klass.parse(@data)
@@ -58,22 +58,22 @@ describe SMG::Model, ".extract" do
 
   describe "using :at option" do
 
-    it "extracts the appropriate attribute" do
-      @klass.extract 'spec/conservation', :as => :conservation_code, :at => :code
-      malus = @klass.parse(@data)
-      malus.conservation_code.should == 'VU'
-    end
-
-    it "extracts nothing if there'no appropriate attribute" do
+    it "does nothing if there's no appropriate attribute" do
       @klass.extract 'spec/conservation', :as => :conservation_code, :at => :bogus
       malus = @klass.parse(@data)
       malus.conservation_code.should == nil
     end
 
-    it "extracts nothing if there'no appropriate element" do
+    it "does nothing if there's no appropriate element" do
       @klass.extract 'spec/whatever', :as => :whatever, :at => :bogus
       malus = @klass.parse(@data)
       malus.whatever.should == nil
+    end
+
+    it "extracts the value of the appropriate attribute othwerwise" do
+      @klass.extract 'spec/conservation', :as => :conservation_code, :at => :code
+      malus = @klass.parse(@data)
+      malus.conservation_code.should == 'VU'
     end
 
   end
@@ -87,13 +87,13 @@ describe SMG::Model, ".extract" do
       malus.should respond_to :conservation_status=
     end
 
-    it "extracts data from an element using the 'as' accessor" do
+    it "extracts characters using the 'as' accessor" do
       @klass.extract 'spec/conservation', :as => :conservation_status
       malus = @klass.parse(@data)
       malus.conservation_status.should == 'Vulnerable (IUCN 2.3)'
     end
 
-    it "extracts nothing if there's no appropriate element" do
+    it "does nothing if there's no appropriate element" do
       @klass.extract 'spec/bogus', :as => :conservation_code, :at => :bogus
       malus = @klass.parse(@data)
       malus.conservation_code.should == nil
@@ -105,7 +105,7 @@ describe SMG::Model, ".extract" do
 
     describe "when :class represents an SMG::Resource" do
 
-      it "extracts data into the class (AKA has_one)" do
+      it "builds nested resource" do
         @foo = Class.new
         @foo.send(:include, SMG::Resource)
         @foo.root 'description'
@@ -148,9 +148,9 @@ describe SMG::Model, ".extract" do
 
 end
 
-describe SMG::Model, ".extract" do
+describe SMG::Model, "#extract" do
 
-  describe "when XML contains two or more suitable elements" do
+  describe "when XML contains two or more suitable things" do
 
     before :each do
       @klass = Class.new { include SMG::Resource }
@@ -197,7 +197,7 @@ describe SMG::Model, ".extract" do
 
 end
 
-describe SMG::Model, ".extract" do
+describe SMG::Model, "#extract" do
 
   before :each do
     @klass = Class.new { include SMG::Resource }
@@ -216,4 +216,5 @@ describe SMG::Model, ".extract" do
   end
 
 end
+
 # EOF
