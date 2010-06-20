@@ -1,4 +1,5 @@
 require 'net/http'
+require 'net/https'
 
 gem 'addressable', '>= 2.1.1'
 require 'addressable/uri'
@@ -23,6 +24,7 @@ module SMG #:nodoc:
         @limit    = options[:no_follow] ? 1 : options[:limit] || DEFAULT_LIMIT
         @body     = options[:body]
         @timeout  = options[:timeout] ? options[:timeout].to_i : nil
+        @pem      = options[:pem]
       end
 
       def perform
@@ -31,6 +33,8 @@ module SMG #:nodoc:
         handle_response(response)
       rescue Timeout::Error => e
         raise TimeoutError, e.message
+      #rescue OpenSSL::SSL::SSLError => e
+        #raise SSLError.new(e.message)
       end
 
       protected
@@ -101,6 +105,12 @@ module SMG #:nodoc:
         end
       end
 
+      def ssl?
+        @uri.scheme == "https" 
+      end
+
+      alias :use_ssl? :ssl?
+
       def setup
         @request = verb.new(@uri.request_uri, @headers)
         @request.basic_auth(@uri.user, @uri.password) if @uri.user && @uri.password
@@ -110,8 +120,19 @@ module SMG #:nodoc:
 
       def http
         http = @proxy ?
-          Net::HTTP.new(@uri.host, @uri.port, @proxy.host, @proxy.port, @proxy.user, @proxy.password) :
-          Net::HTTP.new(@uri.host, @uri.port)
+          Net::HTTP.new(@uri.host, @uri.inferred_port, @proxy.host, @proxy.inferred_port, @proxy.user, @proxy.password) :
+          Net::HTTP.new(@uri.host, @uri.inferred_port)
+
+        if ssl?
+          http.use_ssl = true
+          if @pem
+            http.cert = OpenSSL::X509::Certificate.new(@pem)
+            http.key = OpenSSL::PKey::RSA.new(@pem)
+            http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+          else
+            http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+          end
+        end
 
         return http unless @timeout
         http.open_timeout = @timeout
