@@ -44,8 +44,7 @@ module SMG #:nodoc:
 
     def handle_path(path)
       ret = normalize_path(path)
-      ret.unshift(@root) if @root
-      ret.flatten!
+      ret.unshift(*@root) if @root
       ret
     end
 

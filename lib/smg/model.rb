@@ -21,20 +21,20 @@ module SMG #:nodoc:
       thing = Class === options[:class] ? mapping.attach_nested(tag,options) : mapping.attach_element(tag,options)
 
       if (instance_methods & [thing.accessor, thing.accessor.to_s]).empty?
-        class_eval <<-CODE
+        class_eval(<<-EOS, __FILE__, __LINE__ + 1)
         def #{thing.accessor}(value)
           @#{thing.name} ||= []
           @#{thing.name} << value
         end
-        CODE
+        EOS
       end
 
       if (instance_methods & [thing.name, thing.name.to_s]).empty?
-        class_eval <<-CODE
+        class_eval(<<-EOS, __FILE__, __LINE__ + 1)
         def #{thing.name}
           @#{thing.name} ||= []
         end
-        CODE
+        EOS
       end
 
     end
