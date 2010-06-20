@@ -16,11 +16,7 @@ module SMG #:nodoc:
         @context    = nil
 
         if options.key?(:context)
-          raise ArgumentError, "+options[:context]+ should be an Array of Symbols" unless
-            Array === options[:context] &&
-            options[:context].all?{ |c| Symbol === c }
-
-          @context = options[:context].compact
+          @context = Array(options[:context]).compact
           @context.uniq!
           @context = nil if @context.empty?
         end
