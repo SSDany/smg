@@ -63,7 +63,7 @@ DESCR
   ]
 
   s.add_dependency 'nokogiri', '>=1.3'
-  s.add_dependency 'addressable', '>=2.1.1'
+  s.add_dependency 'addressable', '>=2.1.2'
   s.rubyforge_project = 'smg'
 end
 

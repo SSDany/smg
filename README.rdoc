@@ -20,7 +20,7 @@ http://github.com/SSDany/smg/tree/master/examples
 == REQUIREMENTS:
 
 * nokogiri (>=1.3)
-* addressable (>=2.1.1)
+* addressable (>=2.1.2)
 
 == LICENSE:
 
