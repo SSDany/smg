@@ -327,6 +327,15 @@ describe SMG::HTTP::Request do
     @request.send(:http)
   end
 
+  it "raises an SSLError when OpenSSL::SSL::SSLError occurs" do
+    @request = SMG::HTTP::Request.new(Net::HTTP::Get, "https://example.org", :pem => :test)
+    @http = mock("http")
+    @request.should_receive(:http).and_return(@http)
+    @http.should_receive(:request).
+    and_raise(OpenSSL::SSL::SSLError.new('Expired certificate'))
+    lambda { @request.send(:perform) }.should raise_error SMG::HTTP::SSLError, %r{Expired certificate}
+  end
+
 end
 
 # EOF

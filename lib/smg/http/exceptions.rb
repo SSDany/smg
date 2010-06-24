@@ -3,6 +3,8 @@ module SMG #:nodoc:
 
     class ConnectionError < StandardError
 
+      attr_reader :response
+
       def initialize(response, message = nil)
         @response = response
         @message = message
@@ -19,16 +21,10 @@ module SMG #:nodoc:
     class RedirectionError < ConnectionError
     end
 
-    class TimeoutError < ConnectionError
+    class TimeoutError < ::Timeout::Error
+    end
 
-      def initialize(message)
-        @message = message
-      end
-
-      def to_s
-        @message
-      end
-
+    class SSLError < StandardError
     end
 
   end

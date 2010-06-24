@@ -33,8 +33,8 @@ module SMG #:nodoc:
         handle_response(response)
       rescue Timeout::Error => e
         raise TimeoutError, e.message
-      #rescue OpenSSL::SSL::SSLError => e
-        #raise SSLError.new(e.message)
+      rescue OpenSSL::SSL::SSLError => e
+        raise SSLError, e.message
       end
 
       protected
@@ -106,7 +106,7 @@ module SMG #:nodoc:
       end
 
       def ssl?
-        @uri.scheme == "https" 
+        @uri.scheme == "https"
       end
 
       alias :use_ssl? :ssl?
