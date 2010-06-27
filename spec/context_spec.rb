@@ -99,7 +99,7 @@ describe SMG::Model do
 
   end
 
-  describe ".collect with context" do
+  describe "#collect with context" do
 
     before :each do
       @data = File.read(FIXTURES_DIR + 'discogs/Ophidian.xml')
