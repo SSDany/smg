@@ -5,17 +5,22 @@ require 'zlib'
 module Discogs
 
   def self.search(t,q)
-    Discogs::Search.get("search",
-      :query => {"type" => t, "q" => q},
-      :headers => {"Accept-Encoding" => "gzip,*;q=0"}) do |response|
-      Zlib::GzipReader.new(StringIO.new(response.body)).read
-    end
+    query = {"type" => t, "q" => q}
+    Discogs::Search.get("search", :query => query, :headers => {"Accept-Encoding" => "gzip,*;q=0"})
   end
 
   class Search
 
     include SMG::Resource
     include SMG::HTTP
+
+    before_request do |request|
+      puts "processing #{request.uri}"
+    end
+
+    on_parse do |data|
+      Zlib::GzipReader.new(StringIO.new(data)).read
+    end
 
     class ExactResult
       include SMG::Resource
