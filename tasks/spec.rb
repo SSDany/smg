@@ -2,8 +2,6 @@ begin
 
   namespace :spec do
 
-    gem 'rspec', '~>1.2'
-    require 'spec'
     require 'spec/rake/spectask'
 
     JRUBY = RUBY_PLATFORM =~ /java/
@@ -21,11 +19,10 @@ begin
     end
 
     begin
-      gem 'rcov', '~>0.8'
       desc 'Run specifications with RCov'
       run_spec(:rcov, ROOT + 'spec/**/*_spec.rb', true)
     rescue LoadError
-      # rcov not installed
+      abort 'rcov not installed'
     end
 
   end
@@ -36,7 +33,7 @@ begin
   task :clobber => "spec:clobber_rcov" if Rake::Task.task_defined? 'spec:clobber_rcov'
 
 rescue LoadError
-  # rspec not installed
+  abort 'rspec not installed'
 end
 
 # EOF
