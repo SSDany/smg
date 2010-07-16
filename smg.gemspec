@@ -20,6 +20,7 @@ DESCR
   s.files = s.extra_rdoc_files + [
     "lib/smg/document.rb",
     "lib/smg/http/exceptions.rb",
+    "lib/smg/http/hooks.rb",
     "lib/smg/http/request.rb",
     "lib/smg/http.rb",
     "lib/smg/mapping/element.rb",
