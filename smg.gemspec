@@ -1,7 +1,7 @@
 GEMSPEC = Gem::Specification.new do |s|
 
   s.name = 'smg'
-  s.version = '0.2.1'
+  s.version = '0.2.2'
   s.platform = Gem::Platform::RUBY
 
   s.authors = %w[SSDany]
