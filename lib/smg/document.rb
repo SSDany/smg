@@ -29,7 +29,8 @@ module SMG #:nodoc:
       @docs.each { |doc| doc.start_element(name,attrs) }
 
       if !attrs.empty? && maps = @mapping.attributes[@stack]
-        maps.values_at(*(ahash ||= Hash[*attrs]).keys).compact.each do |m|
+        #maps.values_at(*(ahash ||= Hash[*attrs]).keys).compact.each do |m|
+        maps.values_at(*(ahash ||= Hash[*attrs]).keys).flatten.compact.each do |m|
           if !@parsed.include?(m.object_id) &&
              m.in_context_of?(@context) &&
              m.with?(ahash)

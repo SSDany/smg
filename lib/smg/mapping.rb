@@ -15,7 +15,9 @@ module SMG #:nodoc:
       thing = Element.new(chain, options)
       if options.key?(:at)
         @attributes[chain] ||= {}
-        @attributes[chain][thing.at] = thing
+        #@attributes[chain][thing.at] = thing
+        @attributes[chain][thing.at] ||= []
+        @attributes[chain][thing.at] << thing
       else
         @elements[chain] = thing
       end
