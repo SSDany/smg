@@ -41,6 +41,7 @@ module SMG #:nodoc:
 
     def root(tag)
       mapping.use_root(tag)
+      nil
     end
 
     def parse(data, context = nil)
