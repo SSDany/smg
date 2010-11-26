@@ -22,7 +22,7 @@ module SMG #:nodoc:
       if thing = @mapping.nested[@stack] and
          !@parsed.include?(thing.object_id) &&
          thing.in_context_of?(@context) &&
-         thing.with?(ahash ||= Hash[*attrs])
+         thing.with?(ahash ||= Hash[*attrs.flatten])
         @docs << Document.new(thing.data_class.new,@context,thing)
       end
 
@@ -30,7 +30,7 @@ module SMG #:nodoc:
 
       if !attrs.empty? && maps = @mapping.attributes[@stack]
         #maps.values_at(*(ahash ||= Hash[*attrs]).keys).compact.each do |m|
-        maps.values_at(*(ahash ||= Hash[*attrs]).keys).flatten.compact.each do |m|
+        maps.values_at(*(ahash ||= Hash[*attrs.flatten]).keys).flatten.compact.each do |m|
           if !@parsed.include?(m.object_id) &&
              m.in_context_of?(@context) &&
              m.with?(ahash)
@@ -43,7 +43,7 @@ module SMG #:nodoc:
       if e = @mapping.elements[@stack] and
          !@parsed.include?(e.object_id) &&
          e.in_context_of?(@context) &&
-         e.with?(ahash ||= Hash[*attrs])
+         e.with?(ahash ||= Hash[*attrs.flatten])
         @elements << [e,""]
       end
 
